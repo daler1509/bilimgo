@@ -45,7 +45,7 @@
         },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' https://challenges.cloudflare.com 'sha256-OZHdc69eN+1/OVzrqq9TgmCGK+iZ3LAufsmPOMJ8M+U='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://tiles.openfreemap.org; font-src 'self' data:; connect-src 'self' https://*.supabase.co https://challenges.cloudflare.com https://tiles.openfreemap.org; worker-src 'self' blob:; frame-src https://challenges.cloudflare.com; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'"
+          "value": "default-src 'self'; script-src 'self' https://challenges.cloudflare.com 'sha256-OZHdc69eN+1/OVzrqq9TgmCGK+iZ3LAufsmPOMJ8M+U='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://tiles.openfreemap.org https://*.supabase.co; font-src 'self' data:; connect-src 'self' https://*.supabase.co https://challenges.cloudflare.com https://tiles.openfreemap.org; worker-src 'self' blob:; frame-src https://challenges.cloudflare.com; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'"
         },
         {
           "key": "Permissions-Policy",
