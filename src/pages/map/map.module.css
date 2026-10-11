@@ -1,0 +1,209 @@
+.root {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+}
+
+.controls {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-map-controls);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px 10px;
+  pointer-events: none;
+}
+
+.controls > * {
+  pointer-events: auto;
+}
+
+.searchRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: min(420px, 100%);
+}
+
+.searchRow > form {
+  flex: 1;
+  box-shadow: var(--shadow-md), 0 0 0 1px var(--color-hairline);
+}
+
+.chipRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: calc(100% - 68px);
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-block: 2px;
+  /* the last chip fades out at the edge: there is more to scroll; the end padding lets it scroll clear of the fade */
+  padding-inline-end: 24px;
+  -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 24px), transparent);
+  mask-image: linear-gradient(90deg, #000 calc(100% - 24px), transparent);
+}
+
+.chipRow > * {
+  flex-shrink: 0;
+}
+
+.chipRow::-webkit-scrollbar {
+  display: none;
+}
+
+.statusBar {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  z-index: var(--z-map-overlay);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 40px;
+  padding-inline: 14px;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-md), 0 0 0 1px var(--color-hairline);
+  font-size: var(--text-body-sm);
+  font-weight: var(--weight-medium);
+}
+
+.statusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-check);
+}
+
+/* parts of the line are set apart by a hairline, not by punctuation */
+.statusPart,
+.statusHint {
+  padding-left: 10px;
+  border-left: 1px solid var(--color-border);
+}
+
+.statusHint {
+  color: var(--color-text-tertiary);
+  font-weight: var(--weight-regular);
+  font-size: var(--text-caption);
+}
+
+/* list ⇄ map: the same button in the same place as on the list */
+.viewSwitch {
+  position: absolute;
+  left: 50%;
+  bottom: 28px;
+  z-index: var(--z-map-overlay);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding-inline: 18px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--color-ink);
+  color: var(--color-on-ink);
+  box-shadow: var(--shadow-lg);
+  font-size: var(--text-body-sm);
+  font-weight: var(--weight-semibold);
+  translate: -50% 0;
+  white-space: nowrap;
+  animation: pop-in var(--duration-slow) var(--ease-out) both;
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    scale var(--duration-fast) var(--ease-standard);
+}
+
+.viewSwitch:hover {
+  background: var(--color-ink-hover);
+}
+
+.viewSwitch:active {
+  scale: 0.97;
+}
+
+.viewSwitch:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-lg), var(--focus-ring);
+}
+
+.viewCount {
+  display: grid;
+  place-items: center;
+  min-width: 28px;
+  height: 28px;
+  padding-inline: 8px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--color-on-ink) 16%, transparent);
+  font-variant-numeric: tabular-nums;
+}
+
+/* phones: the picked place on a sheet that rises from the bottom edge;
+   it stops above the map's attribution line */
+.sheet {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 28px;
+  z-index: var(--z-sheet);
+  touch-action: none;
+  transform: translateY(calc(100% + 48px));
+  transition: transform 260ms var(--ease-in-out);
+}
+
+.sheet[data-state='open'] {
+  transform: none;
+  transition: transform 520ms var(--ease-out);
+}
+
+/* following the finger: no easing in the way */
+.sheet[data-dragging] {
+  transition: none;
+}
+
+.sheetGrip {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  z-index: 1;
+  width: 36px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--color-border-hover);
+  translate: -50% 0;
+}
+
+.sheetSwap {
+  animation: sheet-swap 300ms var(--ease-out) both;
+}
+
+@keyframes sheet-swap {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sheet,
+  .sheet[data-state='open'] {
+    transition: none;
+  }
+
+  .sheetSwap {
+    animation: none;
+  }
+}
+
+@media (max-width: 1023px) {
+  .controls {
+    padding: 10px 12px;
+  }
+
+  .searchRow {
+    width: 100%;
+  }
+}

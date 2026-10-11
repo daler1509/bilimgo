@@ -1,0 +1,28 @@
+.popover {
+  position: fixed;
+  z-index: var(--z-popover);
+  min-width: 240px;
+  max-width: min(420px, calc(100vw - 24px));
+  max-height: min(480px, calc(100dvh - 120px));
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 8px;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-lg), 0 0 0 1px var(--color-border);
+  transform-origin: top left;
+  opacity: 0;
+  transform: translateY(-4px) scale(0.98);
+  transition:
+    opacity var(--duration-base) var(--ease-standard),
+    transform var(--duration-base) var(--ease-out);
+}
+
+.popover[data-state='open'] {
+  opacity: 1;
+  transform: none;
+}
+
+.alignEnd {
+  transform-origin: top right;
+}

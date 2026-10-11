@@ -1,0 +1,211 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: var(--text-body-sm);
+  font-weight: var(--weight-semibold);
+}
+
+.optional {
+  margin-left: 4px;
+  color: var(--color-text-tertiary);
+  font-weight: var(--weight-regular);
+}
+
+.input,
+.phone {
+  width: 100%;
+  min-height: var(--control-lg);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  font-size: var(--text-body);
+  transition:
+    border-color var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard);
+}
+
+.input {
+  padding: 10px 12px;
+  line-height: 1.4;
+}
+
+textarea.input {
+  resize: vertical;
+  min-height: 72px;
+}
+
+/* native list on phones, own chevron so it follows the theme */
+.select {
+  position: relative;
+}
+
+.select .input {
+  appearance: none;
+  padding-right: 40px;
+  cursor: pointer;
+}
+
+.chevron {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  translate: 0 -50%;
+  color: var(--color-text-tertiary);
+  pointer-events: none;
+}
+
+.input:hover,
+.phone:hover {
+  border-color: var(--color-border-hover);
+}
+
+.input:focus,
+.phone:focus-within {
+  outline: none;
+  border-color: var(--color-focus);
+  box-shadow: var(--focus-ring);
+}
+
+.input::placeholder,
+.phoneInput::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+/* +998 stays put, the nine digits are typed after it */
+.phone {
+  display: flex;
+  align-items: stretch;
+}
+
+.prefix {
+  display: flex;
+  align-items: center;
+  padding-inline: 12px 10px;
+  border-right: 1px solid var(--color-border-subtle);
+  color: var(--color-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.phoneInput {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 12px;
+  border: none;
+  border-radius: inherit;
+  background: none;
+  font-size: var(--text-body);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+.phoneInput:focus {
+  outline: none;
+}
+
+.phone[data-invalid] {
+  border-color: var(--color-danger);
+}
+
+.hint {
+  color: var(--color-text-tertiary);
+  font-size: var(--text-caption);
+}
+
+.error {
+  color: var(--color-danger);
+  font-size: var(--text-caption);
+  font-weight: var(--weight-medium);
+}
+
+.formError {
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--color-danger-subtle);
+  color: var(--color-danger);
+  font-size: var(--text-body-sm);
+  font-weight: var(--weight-medium);
+}
+
+.consent {
+  color: var(--color-text-tertiary);
+  font-size: var(--text-caption);
+  line-height: 1.5;
+}
+
+/* honeypot: off-screen rather than display:none, some bots skip hidden fields */
+.trap {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* ---------------- sent / not connected ---------------- */
+.result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-block: 12px 8px;
+  text-align: center;
+}
+
+.resultIcon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  margin-bottom: 14px;
+  border-radius: 50%;
+  background: var(--color-bg-muted);
+  color: var(--color-text-secondary);
+}
+
+.resultIcon[data-tone='success'] {
+  background: var(--color-success-subtle);
+  color: var(--color-success);
+  animation: result-in 420ms var(--ease-spring) both;
+}
+
+.resultTitle {
+  font-size: var(--text-h4);
+  font-weight: var(--weight-semibold);
+}
+
+.resultText {
+  max-width: 34ch;
+  margin-top: 6px;
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-sm);
+  line-height: 1.5;
+}
+
+.resultPhone {
+  margin-top: 12px;
+  font-size: var(--text-body-lg);
+  font-weight: var(--weight-semibold);
+  font-variant-numeric: tabular-nums;
+}
+
+@keyframes result-in {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .resultIcon[data-tone='success'] {
+    animation: none;
+  }
+}

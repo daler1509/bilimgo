@@ -1,0 +1,69 @@
+/* ---------- words rising from under a mask ---------- */
+
+/* the mask is a little taller and wider than the glyphs: descenders (у, р, д)
+   and the tight display tracking must not get clipped */
+.word {
+  display: inline-block;
+  margin: 0 -0.06em -0.14em;
+  padding: 0 0.06em 0.14em;
+  overflow: hidden;
+  vertical-align: top;
+}
+
+.wordInner {
+  display: inline-block;
+  transform: translateY(108%);
+  transition: transform var(--duration-reveal) var(--ease-out);
+  will-change: transform;
+}
+
+.reveal[data-shown] .wordInner {
+  transform: none;
+  will-change: auto;
+}
+
+/* ---------- counter board ---------- */
+
+.number {
+  display: inline-block;
+  vertical-align: top;
+  white-space: nowrap;
+}
+
+.digits {
+  display: inline-block;
+}
+
+/* sized by the final digit, so the settled number reads like plain text */
+.window {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+}
+
+.ghost {
+  visibility: hidden;
+}
+
+.strip {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  translate: -50% 0;
+  transition: transform var(--duration-count) cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wordInner {
+    transform: none;
+    transition: none;
+  }
+
+  .strip {
+    transition: none;
+  }
+}

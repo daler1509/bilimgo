@@ -1,0 +1,150 @@
+.strip {
+  --marquee-row-h: 48px;
+  margin-top: clamp(40px, 5vw, 64px);
+  overflow: hidden;
+}
+
+.label {
+  margin-bottom: 10px;
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-sm);
+  font-weight: var(--weight-medium);
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Clips the track and lets it fade out towards both edges */
+.viewport {
+  position: relative;
+  min-height: var(--marquee-row-h); /* reserves space before data arrives */
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 9%, #000 91%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 9%, #000 91%, transparent 100%);
+}
+
+.track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+.group {
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 2vw, 28px);
+  padding-right: clamp(12px, 2vw, 28px);
+  flex-shrink: 0;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--marquee-row-h);
+}
+
+/* Too few centres to loop without visible repetition: one calm, centred line */
+.static {
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
+.static .track {
+  width: 100%;
+  justify-content: center;
+}
+
+.static .group {
+  flex-wrap: wrap;
+  justify-content: center;
+  padding-right: 0;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 100%;
+  padding: 4px 14px 4px 4px;
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  -webkit-user-drag: none;
+  transition:
+    background-color var(--duration-base) var(--ease-standard),
+    color var(--duration-base) var(--ease-standard);
+}
+
+/* one frame, one tone: colour logos are shown in greyscale */
+.mark img {
+  filter: grayscale(1) contrast(1.05);
+  opacity: 0.85;
+  transition:
+    filter var(--duration-base) var(--ease-standard),
+    opacity var(--duration-base) var(--ease-standard);
+}
+
+.name {
+  font-size: var(--text-body-sm);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-tight);
+  white-space: nowrap;
+}
+
+.logo:hover,
+.logo:focus-visible {
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.logo:hover .mark img,
+.logo:focus-visible .mark img {
+  filter: none;
+  opacity: 1;
+}
+
+.logo:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+/* Static, readable layout when the user asks for less motion */
+@media (prefers-reduced-motion: reduce) {
+  .viewport {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  .track {
+    display: block;
+    width: 100%;
+    transform: none !important;
+  }
+
+  /* a tidy index instead of a moving line */
+  .group {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 4px 16px;
+    width: 100%;
+    max-width: calc(var(--container-max) + var(--gutter) * 2);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  .item {
+    justify-content: flex-start;
+  }
+
+  .duplicate {
+    display: none;
+  }
+
+  .mark img {
+    opacity: 1;
+  }
+}

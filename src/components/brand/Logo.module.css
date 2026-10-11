@@ -1,0 +1,32 @@
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--logo-h) * 0.3);
+  --logo-h: 30px;
+  border-radius: var(--radius-sm);
+}
+
+/* height only: width comes from the image's own aspect ratio */
+.mark,
+.wordmark {
+  flex-shrink: 0;
+  width: auto;
+  max-width: none;
+}
+
+.mark {
+  height: var(--logo-h);
+}
+
+.wordmark {
+  height: calc(var(--logo-h) * 0.6);
+}
+
+.onDark,
+:global(:root[data-theme='dark']) .onLight {
+  display: none;
+}
+
+:global(:root[data-theme='dark']) .onDark {
+  display: block;
+}

@@ -1,0 +1,99 @@
+.form {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 44px;
+  padding-inline: 14px;
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: inset 0 0 0 1px var(--color-border-strong);
+  transition: box-shadow var(--duration-fast);
+}
+
+.form:hover {
+  box-shadow: inset 0 0 0 1px var(--color-border-hover);
+}
+
+.form:focus-within {
+  box-shadow: inset 0 0 0 1.5px var(--color-focus), var(--focus-ring);
+}
+
+.icon {
+  color: var(--color-text-tertiary);
+  flex-shrink: 0;
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: none;
+  outline: none;
+  font-size: var(--text-body-sm);
+  font-weight: var(--weight-medium);
+}
+
+.input::placeholder {
+  color: var(--color-text-tertiary);
+  font-weight: var(--weight-regular);
+}
+
+.clear {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  color: var(--color-text-tertiary);
+  transition: background-color var(--duration-fast), color var(--duration-fast);
+}
+
+.clear:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-text);
+}
+
+/* mobile summary pill */
+.pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  height: 46px;
+  padding-inline: 14px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-md), 0 0 0 1px var(--color-hairline);
+  text-align: left;
+}
+
+.pill:active {
+  transform: scale(0.99);
+}
+
+.pillText {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--text-body-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pillPlaceholder {
+  font-weight: var(--weight-regular);
+  color: var(--color-text-tertiary);
+}
+
+.pillEdit {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--color-bg-muted);
+  color: var(--color-text-secondary);
+  flex-shrink: 0;
+}

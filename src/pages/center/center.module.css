@@ -1,0 +1,888 @@
+.page {
+  padding-top: 16px;
+}
+
+/* ---------------- breadcrumbs ---------------- */
+.crumbs {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 36px;
+}
+
+/* says where it leads: «К карте», «К результатам»… */
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 36px;
+  flex-shrink: 0;
+  padding-inline: 8px 12px;
+  margin-left: -8px;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-sm);
+  font-weight: var(--weight-medium);
+  white-space: nowrap;
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
+}
+
+.back:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-text);
+}
+
+.back:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.crumbList {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  padding-left: 12px;
+  border-left: 1px solid var(--color-border);
+  color: var(--color-text-tertiary);
+  font-size: var(--text-caption);
+}
+
+.crumbList li {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.crumbList li + li {
+  margin-left: 4px;
+}
+
+/* separators keep their size when the trail runs out of room */
+.crumbList svg {
+  flex-shrink: 0;
+}
+
+.crumbList a {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* on phones the back button is enough; the trail needs room */
+@media (max-width: 767px) {
+  .crumbList {
+    display: none;
+  }
+}
+
+.crumbList a {
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-xs);
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+
+.crumbList a:hover {
+  color: var(--color-text);
+}
+
+.crumbList li[aria-current] {
+  flex-shrink: 1;
+}
+
+.crumbList li[aria-current] span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------------- hero ---------------- */
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr);
+  gap: clamp(32px, 4vw, 64px);
+  padding-block: 20px 56px;
+}
+
+.heroText {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.identity {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.logo {
+  box-shadow: var(--shadow-sm);
+}
+
+.names {
+  min-width: 0;
+}
+
+.kind {
+  margin-top: 6px;
+  color: var(--color-text-secondary);
+  font-size: var(--text-body);
+}
+
+.title {
+  font-size: clamp(1.875rem, 1.35rem + 1.7vw, 2.75rem);
+  font-weight: var(--weight-bold);
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+  overflow-wrap: anywhere;
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.lead {
+  max-width: 56ch;
+  margin-top: 24px;
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-lg);
+  line-height: var(--leading-body);
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 24px;
+  font-size: var(--text-body-sm);
+}
+
+.meta li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.meta svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--color-text-tertiary);
+}
+
+.meta li[data-open='true'],
+.meta li[data-open='true'] svg {
+  color: var(--color-success);
+}
+
+.muted {
+  color: var(--color-text-tertiary);
+}
+
+/* the two things people come for: ask about a course, call */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 32px;
+}
+
+.primaryAction {
+  min-width: 168px;
+}
+
+/* keeping, comparing, getting there — quieter, one size down */
+.tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.media {
+  position: relative;
+  min-width: 0;
+  min-height: 340px;
+}
+
+.mapCard {
+  position: relative;
+  height: 100%;
+  min-height: 340px;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px var(--color-border);
+  isolation: isolate;
+}
+
+.asideMap .mapCard {
+  height: auto;
+  min-height: 0;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-sm);
+}
+
+/* the address block right below has the same link */
+.asideMap .mapLink {
+  display: none;
+}
+
+/* sits above the map's attribution line, which must stay readable */
+.mapLink {
+  position: absolute;
+  left: 12px;
+  bottom: 28px;
+  z-index: 30;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding-inline: 12px;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-md), 0 0 0 1px var(--color-hairline);
+  font-size: var(--text-caption);
+  font-weight: var(--weight-semibold);
+  transition: background-color var(--duration-fast) var(--ease-standard);
+}
+
+.mapLink:hover {
+  background: var(--color-surface-hover);
+}
+
+.mapLink:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+/* ---------------- body ---------------- */
+/* phones read it top to bottom: content, contacts, branches, sources */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  grid-template-areas:
+    'main aside'
+    'branches aside'
+    'sources aside';
+  grid-template-rows: auto auto 1fr;
+  column-gap: clamp(32px, 4vw, 64px);
+  padding-top: 8px;
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.main {
+  grid-area: main;
+  min-width: 0;
+}
+
+.branchesBlock {
+  grid-area: branches;
+  min-width: 0;
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.aside {
+  grid-area: aside;
+  align-self: start;
+  position: sticky;
+  top: calc(var(--header-height) + 24px);
+  padding-top: 32px;
+}
+
+.section {
+  padding-block: 32px;
+}
+
+.section + .section {
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.sectionTitle {
+  font-size: var(--text-h3);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-heading);
+  margin-bottom: 16px;
+}
+
+.prose {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 68ch;
+  font-size: var(--text-body-lg);
+  line-height: 1.6;
+}
+
+.placeholder {
+  max-width: 60ch;
+  color: var(--color-text-tertiary);
+  font-size: var(--text-body-sm);
+}
+
+.sectionLead {
+  max-width: 60ch;
+  margin-top: -6px;
+  margin-bottom: 16px;
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-sm);
+  line-height: 1.55;
+}
+
+/* courses: cards you can act on; the whole card asks about its course */
+.courseGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.courseItem {
+  display: flex;
+  min-width: 0;
+}
+
+.courseCard {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  padding: 16px;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+  text-align: left;
+  transition:
+    box-shadow var(--duration-base) var(--ease-standard),
+    transform var(--duration-base) var(--ease-out);
+}
+
+@media (hover: hover) {
+  .courseCard:hover {
+    box-shadow: inset 0 0 0 1px var(--color-border-hover), var(--shadow-md);
+    transform: translateY(-2px);
+  }
+
+  .courseCard:hover .courseAsk {
+    background: var(--color-surface-hover);
+    border-color: var(--color-border-hover);
+  }
+}
+
+.courseCard:active {
+  transform: scale(0.985);
+}
+
+.courseCard:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 1px var(--color-border), var(--focus-ring);
+}
+
+.courseTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.courseGlyph {
+  background: var(--color-selected-bg);
+  box-shadow: none;
+  color: var(--color-selected-text);
+}
+
+.coursePrice {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  color: var(--color-text-tertiary);
+  font-size: var(--text-caption);
+  white-space: nowrap;
+}
+
+.courseTitle {
+  font-size: var(--text-h4);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--leading-snug);
+}
+
+.courseNote {
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-sm);
+  line-height: 1.45;
+}
+
+/* takes the free height, so the buttons of a row line up */
+.courseBody {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  padding-bottom: 14px;
+}
+
+.courseAsk {
+  pointer-events: none;
+}
+
+/* consultation: the one dark panel on the page, for people who haven't picked yet */
+.advice {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px 32px;
+  margin-top: 16px;
+  padding: clamp(20px, 3vw, 28px);
+  border-radius: var(--radius-lg);
+  /* stays a dark panel in both themes; white text on it everywhere */
+  background: var(--color-panel);
+  color: #fff;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Samarkand tilework fading in from the right edge */
+.advice::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: var(--pattern-girih);
+  background-size: 56px 56px;
+  background-position: right center;
+  opacity: 0.55;
+  -webkit-mask-image: linear-gradient(90deg, transparent 35%, #000);
+  mask-image: linear-gradient(90deg, transparent 35%, #000);
+}
+
+.adviceTitle {
+  font-size: var(--text-h4);
+  font-weight: var(--weight-semibold);
+  line-height: 1.3;
+}
+
+.adviceText p {
+  max-width: 46ch;
+  margin-top: 6px;
+  color: rgb(255 255 255 / 0.78);
+  font-size: var(--text-body-sm);
+  line-height: 1.5;
+}
+
+.adviceButton {
+  flex-shrink: 0;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+}
+
+.detail {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: 16px;
+  padding-block: 12px;
+  border-bottom: 1px solid var(--color-border-subtle);
+  font-size: var(--text-body-sm);
+}
+
+.detail:first-child {
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.detailLabel {
+  color: var(--color-text-secondary);
+}
+
+.detailValue {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-weight: var(--weight-medium);
+}
+
+.detailNote {
+  color: var(--color-text-secondary);
+  font-weight: var(--weight-regular);
+}
+
+.noData {
+  color: var(--color-text-tertiary);
+  font-weight: var(--weight-regular);
+}
+
+.branches {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.branch {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 8px;
+  margin-inline: -8px;
+  border-radius: var(--radius-md);
+  border-bottom: 1px solid var(--color-border-subtle);
+  transition: background-color var(--duration-fast) var(--ease-standard);
+}
+
+.branch:hover {
+  background: var(--color-surface-hover);
+}
+
+.branch:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.branch > svg {
+  flex-shrink: 0;
+  color: var(--color-text-tertiary);
+}
+
+.branchText {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.branchName {
+  font-size: var(--text-body-sm);
+  font-weight: var(--weight-medium);
+}
+
+.branchMeta {
+  color: var(--color-text-tertiary);
+  font-size: var(--text-caption);
+}
+
+.branchArrow {
+  transition: transform var(--duration-base) var(--ease-out);
+}
+
+.branch:hover .branchArrow {
+  transform: translateX(2px);
+}
+
+.sources {
+  grid-area: sources;
+  padding-block: 24px 8px;
+  border-top: 1px solid var(--color-border-subtle);
+  color: var(--color-text-tertiary);
+  font-size: var(--text-caption);
+  line-height: 1.6;
+}
+
+.sources a {
+  color: var(--color-text-secondary);
+  text-decoration: underline;
+  text-decoration-color: var(--color-border-hover);
+  text-underline-offset: 2px;
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+
+.sources a:hover {
+  color: var(--color-text);
+}
+
+/* ---------------- contact card ---------------- */
+.contactCard {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+}
+
+.cardTitle {
+  font-size: var(--text-h4);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-tight);
+  margin-bottom: -8px;
+}
+
+.contactList {
+  display: flex;
+  flex-direction: column;
+  margin-inline: -8px;
+}
+
+.contactLink {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  padding-inline: 8px;
+  border-radius: var(--radius-sm);
+  font-size: var(--text-body-sm);
+  font-weight: var(--weight-medium);
+  transition: background-color var(--duration-fast) var(--ease-standard);
+}
+
+.contactLink span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.handle {
+  color: var(--color-text-tertiary);
+  font-weight: var(--weight-regular);
+}
+
+.contactLink > svg:first-child {
+  flex-shrink: 0;
+  color: var(--color-text-tertiary);
+}
+
+.contactLink:hover {
+  background: var(--color-surface-hover);
+}
+
+.contactLink:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.ext {
+  flex-shrink: 0;
+  margin-left: auto;
+  color: var(--color-text-tertiary);
+}
+
+.cardBlock {
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.cardLabel {
+  margin-bottom: 8px;
+  color: var(--color-text-secondary);
+  font-size: var(--text-caption);
+  font-weight: var(--weight-medium);
+}
+
+.hours {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-body-sm);
+}
+
+.hours th {
+  padding: 3px 12px 3px 0;
+  font-weight: var(--weight-regular);
+  color: var(--color-text-secondary);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.hours td {
+  padding-block: 3px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.hours tr[data-today] th,
+.hours tr[data-today] td {
+  color: var(--color-text);
+  font-weight: var(--weight-semibold);
+}
+
+.hours tr[data-closed] td {
+  color: var(--color-text-tertiary);
+}
+
+.address {
+  font-size: var(--text-body-sm);
+  font-weight: var(--weight-medium);
+}
+
+.cardNote {
+  margin-top: 2px;
+  color: var(--color-text-tertiary);
+  font-size: var(--text-caption);
+}
+
+.cardActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+/* ---------------- similar ---------------- */
+.similar {
+  margin-top: 40px;
+  padding-block: 40px 72px;
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.similarHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 4px;
+}
+
+.similarAll {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  color: var(--color-link);
+  font-size: var(--text-body-sm);
+  font-weight: var(--weight-semibold);
+  border-radius: var(--radius-xs);
+  white-space: nowrap;
+}
+
+.similarAll:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.similarGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 12px;
+}
+
+/* ---------------- tablet & phone ---------------- */
+@media (max-width: 1023px) {
+  .hero {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+    padding-block: 12px 32px;
+  }
+
+  .media,
+  .mapCard {
+    min-height: 0;
+  }
+
+  .mapCard {
+    aspect-ratio: 16 / 10;
+    height: auto;
+  }
+
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: 'main' 'aside' 'branches' 'sources';
+    grid-template-rows: none;
+    padding-top: 0;
+  }
+
+  .aside {
+    position: static;
+    padding-block: 8px 32px;
+  }
+
+  .similarGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .identity {
+    gap: 14px;
+  }
+
+  .lead {
+    margin-top: 18px;
+    font-size: var(--text-body);
+  }
+
+  .actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-top: 24px;
+  }
+
+  .primaryAction {
+    min-width: 0;
+  }
+
+  .tools {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) auto;
+  }
+
+  /* with a route button the four don't fit one row: it gets its own */
+  .tools > :first-child:nth-last-child(4) {
+    grid-column: 1 / -1;
+  }
+
+  .mapCard {
+    aspect-ratio: 4 / 3;
+    border-radius: var(--radius-lg);
+  }
+
+  .courseGrid {
+    display: flex;
+    gap: 10px;
+    margin-inline: -16px;
+    padding: 2px 16px 4px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 16px;
+    scrollbar-width: none;
+  }
+
+  .courseGrid::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* the next card peeks in: there is more to swipe */
+  .courseItem {
+    flex: 0 0 min(78%, 300px);
+    scroll-snap-align: start;
+  }
+
+  .advice {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .detail {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px;
+  }
+
+  .section {
+    padding-block: 28px;
+  }
+
+  .prose {
+    font-size: var(--text-body);
+  }
+
+  .similar {
+    margin-top: 24px;
+    padding-block: 32px 48px;
+  }
+
+  .similarHead {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .similarGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

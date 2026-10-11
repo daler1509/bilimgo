@@ -1,0 +1,35 @@
+.section {
+  padding-top: clamp(40px, 5vw, 72px);
+  padding-bottom: clamp(32px, 4vw, 56px);
+}
+
+.head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.title {
+  font-size: var(--text-h2);
+}
+
+.all {
+  flex-shrink: 0;
+  color: var(--color-link);
+  font-size: var(--text-body-sm);
+  font-weight: var(--weight-semibold);
+  border-radius: var(--radius-sm);
+}
+
+.all:hover {
+  color: var(--color-link-hover);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.all:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}

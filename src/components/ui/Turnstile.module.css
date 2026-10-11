@@ -1,0 +1,4 @@
+/* reserve the widget's height so the form doesn't jump when it appears */
+.widget {
+  min-height: 65px;
+}

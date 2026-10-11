@@ -1,0 +1,582 @@
+.root {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--map-land);
+  contain: strict;
+  isolation: isolate;
+}
+
+/* Own stacking context: marker z-indexes stay inside the map and never
+   rise above our overlays (preview card, controls, sheet). Two classes
+   beat MapLibre's own .maplibregl-map { position: relative }. */
+.root .canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+/* Quiet placeholder while the API loads — no spinner flash on fast networks */
+.loading {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(90deg, transparent 0, var(--color-shimmer) 50%, transparent 100%) 0 0 / 60% 100% no-repeat,
+    var(--map-land);
+  animation: map-loading 1.6s var(--ease-in-out) 400ms infinite;
+  pointer-events: none;
+}
+
+@keyframes map-loading {
+  from {
+    background-position: -60% 0, 0 0;
+  }
+  to {
+    background-position: 160% 0, 0 0;
+  }
+}
+
+/* ---------------- elements positioned by the map ---------------- */
+/* The map places each slot's top-left corner on the coordinate */
+.slot {
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+/* Entrance of a new place. The slot itself is moved by the map with a
+   transform, so the animation runs on its child (pin, cluster or dot),
+   which scales from the exact coordinate. */
+.slot[data-enter] > * {
+  animation: place-in 460ms var(--ease-spring) var(--enter-delay, 0ms) both;
+}
+
+.slot[data-enter='quick'] > * {
+  animation-duration: 200ms;
+  animation-timing-function: var(--ease-out);
+}
+
+@keyframes place-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.55);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------------- markers ---------------- */
+.markerWrap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+/* The pin's tip sits exactly on the coordinate (the slot origin) */
+.marker {
+  position: absolute;
+  left: -13.5px;
+  top: -38px;
+  display: grid;
+  place-items: center;
+  width: 27px;
+  height: 38px;
+  color: var(--pin-fill);
+  transform-origin: 50% 100%;
+  transition:
+    transform var(--duration-base) var(--ease-spring),
+    filter var(--duration-base) var(--ease-standard);
+  filter: drop-shadow(0 2px 3px rgb(11 26 46 / 0.28));
+}
+
+.markerWrap:hover .marker,
+.hovered .marker {
+  transform: scale(1.14) translateY(-2px);
+  filter: drop-shadow(0 6px 10px rgb(11 26 46 / 0.32));
+}
+
+.markerWrap:focus-visible {
+  outline: none;
+}
+
+.markerWrap:focus-visible .marker {
+  transform: scale(1.14);
+  filter: drop-shadow(0 0 0 3px var(--focus-ring-color));
+}
+
+.pin {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.pinShape {
+  fill: currentColor;
+  stroke: var(--pin-ink);
+  stroke-width: 1.5;
+}
+
+.pinIcon {
+  position: relative;
+  display: grid;
+  place-items: center;
+  margin-bottom: 10px;
+  color: var(--pin-ink);
+}
+
+.hovered {
+  z-index: 5;
+}
+
+.selected {
+  z-index: 6;
+}
+
+.selected .marker {
+  left: -17px;
+  top: -48px;
+  width: 34px;
+  height: 48px;
+  color: var(--pin-selected-fill);
+  transform: scale(1);
+  filter: drop-shadow(0 8px 16px rgb(11 26 46 / 0.36));
+  animation: marker-drop var(--duration-slow) var(--ease-spring);
+}
+
+.selected .pinShape {
+  stroke: var(--pin-selected-stroke);
+  stroke-width: 2;
+}
+
+.selectedDot {
+  position: relative;
+  width: 15px;
+  height: 15px;
+  margin-bottom: 13px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  box-shadow: inset 0 -2px 4px rgb(122 89 32 / 0.35);
+}
+
+.markerLabel {
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 168px;
+  padding: 3px 8px;
+  border-radius: var(--radius-xs);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 11.5px;
+  font-weight: var(--weight-semibold);
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-shadow: var(--shadow-md);
+  pointer-events: none;
+  animation: fade-in var(--duration-base) var(--ease-out) both;
+}
+
+.selected .markerLabel {
+  background: var(--color-ink);
+  color: var(--color-on-ink);
+  top: calc(100% + 4px);
+}
+
+@keyframes marker-drop {
+  from {
+    transform: translateY(-8px) scale(0.86);
+    opacity: 0.6;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+.mutedDot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  width: 9px;
+  height: 9px;
+  margin: -4.5px 0 0 -4.5px;
+  border-radius: 50%;
+  background: var(--pin-muted);
+  opacity: 0.55;
+  box-shadow: 0 0 0 2px var(--pin-ring);
+  transition: opacity var(--duration-slow) var(--ease-standard);
+}
+
+/* ---------------- cluster ---------------- */
+.cluster {
+  position: absolute;
+  left: calc(var(--cluster-size, 40px) / -2);
+  top: calc(var(--cluster-size, 40px) / -2);
+  display: grid;
+  place-items: center;
+  width: var(--cluster-size, 40px);
+  height: var(--cluster-size, 40px);
+  border-radius: 50%;
+  background: var(--pin-fill);
+  color: var(--pin-ink);
+  font-size: 13px;
+  font-weight: var(--weight-semibold);
+  font-variant-numeric: tabular-nums;
+  box-shadow:
+    0 0 0 3px var(--pin-ring),
+    0 4px 12px rgb(11 26 46 / 0.28);
+  transition:
+    transform var(--duration-base) var(--ease-spring),
+    box-shadow var(--duration-base);
+}
+
+.markerWrap:hover .cluster {
+  transform: scale(1.09);
+}
+
+.clusterHighlighted {
+  box-shadow:
+    0 0 0 3px var(--color-accent),
+    0 6px 16px rgb(11 26 46 / 0.3);
+}
+
+.markerWrap:focus-visible .cluster {
+  box-shadow:
+    0 0 0 3px var(--pin-ring),
+    0 0 0 6px var(--focus-ring-color);
+}
+
+/* ---------------- user location ---------------- */
+.userDot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  margin: -8px 0 0 -8px;
+  border-radius: 50%;
+  background: var(--color-check);
+  box-shadow:
+    0 0 0 3px var(--pin-ring),
+    0 2px 8px rgb(11 26 46 / 0.3);
+}
+
+.userPulse {
+  position: absolute;
+  inset: -10px;
+  border-radius: 50%;
+  background: var(--color-check);
+  opacity: 0.22;
+  animation: user-pulse 2.6s var(--ease-out) infinite;
+}
+
+@keyframes user-pulse {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.28;
+  }
+  70% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* ---------------- chrome ---------------- */
+.overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.overlay > * {
+  pointer-events: auto;
+}
+
+.controls {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: var(--z-map-controls);
+}
+
+.controlGroup {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-md), 0 0 0 1px var(--color-hairline);
+  overflow: hidden;
+}
+
+.control {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  color: var(--color-text-secondary);
+  transition:
+    background-color var(--duration-fast),
+    color var(--duration-fast);
+}
+
+.control:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-text);
+}
+
+.control:active {
+  background: var(--color-surface-pressed);
+}
+
+.control:disabled {
+  color: var(--color-text-disabled);
+  background: transparent;
+}
+
+.control + .control {
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.control:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring-inset);
+}
+
+@media (pointer: coarse) {
+  .control {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+.searchArea {
+  position: absolute;
+  left: 50%;
+  display: flex;
+  justify-content: center;
+  transform: translateX(-50%);
+  z-index: var(--z-map-controls);
+  animation: search-area-in var(--duration-slow) var(--ease-out) both;
+}
+
+@keyframes search-area-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -10px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%);
+  }
+}
+
+.searchAreaButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding-inline: 16px;
+  border-radius: var(--radius-sm);
+  background: var(--color-ink);
+ color: var(--color-on-ink);
+  font-size: var(--text-body-sm);
+  font-weight: var(--weight-semibold);
+  box-shadow: var(--shadow-lg);
+  white-space: nowrap;
+  transition:
+    background-color var(--duration-fast),
+    transform var(--duration-fast);
+}
+
+.searchAreaButton:hover {
+  background: var(--color-ink-hover);
+}
+
+.searchAreaButton:active {
+  transform: scale(0.97);
+}
+
+.popup {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 320px;
+  max-width: calc(100% - 24px);
+  z-index: var(--z-map-overlay);
+  animation: pop-in var(--duration-base) var(--ease-out) both;
+}
+
+/* ---------------- touch: embedded map opens the full map ---------------- */
+.tapShield {
+  position: absolute;
+  inset: 0;
+  z-index: 15;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 36px;
+  touch-action: pan-x pan-y;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.tapHint {
+  display: inline-flex;
+  align-items: center;
+  height: 34px;
+  padding-inline: 14px;
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--color-surface) 94%, transparent);
+  color: var(--color-text);
+  font-size: var(--text-caption);
+  font-weight: var(--weight-semibold);
+  box-shadow: var(--shadow-md);
+}
+
+.tapShield:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 3px var(--focus-ring-color);
+}
+
+/* ---------------- unavailable ---------------- */
+.unavailable {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: var(--map-land);
+}
+
+.unavailableBody {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 340px;
+  text-align: center;
+}
+
+.unavailableIcon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin-bottom: 14px;
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  box-shadow: var(--shadow-xs), inset 0 0 0 1px var(--color-border);
+}
+
+.unavailableTitle {
+  font-size: var(--text-body);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-tight);
+}
+
+.unavailableText {
+  margin-top: 6px;
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-sm);
+  line-height: var(--leading-snug);
+}
+
+.unavailableActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.unavailableButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 36px;
+  padding-inline: 14px;
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-xs), inset 0 0 0 1px var(--color-border-strong);
+  font-size: var(--text-body-sm);
+  font-weight: var(--weight-semibold);
+  transition: background-color var(--duration-fast) var(--ease-standard);
+}
+
+.unavailableButton:hover {
+  background: var(--color-surface-hover);
+}
+
+.unavailableButton:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.unavailableCompact .unavailableIcon {
+  width: 38px;
+  height: 38px;
+  margin-bottom: 10px;
+}
+
+.unavailableCompact .unavailableActions {
+  margin-top: 12px;
+}
+
+/* ---------------- attribution (required by OpenStreetMap / OpenMapTiles) ---------------- */
+.attribution {
+  position: absolute;
+  right: 6px;
+  bottom: 4px;
+  max-width: calc(100% - 12px);
+  padding: 2px 6px;
+  border-radius: var(--radius-xs);
+  background: color-mix(in srgb, var(--color-surface) 86%, transparent);
+  color: var(--color-text-secondary);
+  font-size: 10.5px;
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.attribution a {
+  color: inherit;
+}
+
+.attribution a:hover {
+  color: var(--color-text);
+  text-decoration: underline;
+}
+
+@media (max-width: 479px) {
+  .attribution {
+    font-size: 9.5px;
+  }
+}
+
+/* keyboard focus on the map canvas */
+.canvas :global(.maplibregl-canvas):focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 3px var(--focus-ring-color);
+}

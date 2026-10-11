@@ -1,0 +1,27 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 22px;
+  padding-inline: 7px 8px;
+  border-radius: 6px;
+  font-size: var(--text-caption);
+  font-weight: var(--weight-semibold);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.badge svg {
+  flex-shrink: 0;
+}
+
+.popular {
+  background: var(--color-highlight-bg);
+  color: var(--color-highlight-text);
+}
+
+.network {
+  background: var(--color-bg-muted);
+  color: var(--color-text-secondary);
+  font-weight: var(--weight-medium);
+}

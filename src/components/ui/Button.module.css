@@ -1,0 +1,199 @@
+.button {
+  --btn-h: var(--control-md);
+  --btn-px: 16px;
+  --btn-bg: var(--color-surface);
+  --btn-fg: var(--color-text);
+  --btn-border: var(--color-border-strong);
+  --btn-bg-hover: var(--color-surface-hover);
+  --btn-border-hover: var(--color-border-hover);
+  --btn-shadow: var(--shadow-xs);
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: var(--btn-h);
+  padding-inline: var(--btn-px);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--btn-border);
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  box-shadow: var(--btn-shadow);
+  font-size: var(--text-body-sm);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-tight);
+  line-height: 1;
+  white-space: nowrap;
+  user-select: none;
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-base) var(--ease-standard),
+    transform var(--duration-fast) var(--ease-standard);
+}
+
+/* only where a pointer hovers: on touch screens a tapped button would keep the hover colour */
+@media (hover: hover) {
+  .button:hover:not(:disabled):not([aria-disabled='true']) {
+    background: var(--btn-bg-hover);
+    border-color: var(--btn-border-hover);
+  }
+}
+
+.button:active:not(:disabled):not([aria-disabled='true']) {
+  transform: translateY(0.5px) scale(0.985);
+}
+
+.button:focus-visible {
+  outline: none;
+  box-shadow: var(--btn-shadow), var(--focus-ring);
+}
+
+.button:disabled,
+.button[aria-disabled='true'] {
+  opacity: 0.5;
+  box-shadow: none;
+}
+
+.icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  transition: transform var(--duration-base) var(--ease-out);
+}
+
+.trailing {
+  composes: icon;
+}
+
+@media (hover: hover) {
+  .button:hover:not(:disabled) .trailing {
+    transform: translateX(2px);
+  }
+}
+
+/* ---------- Variants ---------- */
+.primary {
+  --btn-bg: var(--color-accent);
+  --btn-fg: var(--color-on-accent);
+  --btn-border: transparent;
+  --btn-bg-hover: var(--color-accent-hover);
+  --btn-border-hover: transparent;
+  --btn-shadow: 0 0 #0000;
+}
+
+.dark {
+  --btn-bg: var(--color-ink);
+  --btn-fg: var(--color-on-ink);
+  --btn-border: transparent;
+  --btn-bg-hover: var(--color-ink-hover);
+  --btn-border-hover: transparent;
+  --btn-shadow: 0 0 #0000;
+}
+
+.secondary {
+  --btn-bg: var(--color-surface);
+}
+
+.ghost {
+  --btn-bg: transparent;
+  --btn-border: transparent;
+  --btn-bg-hover: var(--color-surface-hover);
+  --btn-border-hover: transparent;
+  --btn-shadow: 0 0 #0000;
+  --btn-fg: var(--color-text);
+}
+
+.subtle {
+  --btn-bg: var(--color-selected-bg);
+  --btn-fg: var(--color-link);
+  --btn-border: transparent;
+  --btn-bg-hover: var(--color-selected-bg-hover);
+  --btn-border-hover: transparent;
+  --btn-shadow: 0 0 #0000;
+}
+
+.link {
+  --btn-bg: transparent;
+  --btn-border: transparent;
+  --btn-bg-hover: transparent;
+  --btn-border-hover: transparent;
+  --btn-shadow: 0 0 #0000;
+  --btn-fg: var(--color-link);
+  --btn-px: 0;
+  height: auto;
+}
+
+.link:hover:not(:disabled) {
+  color: var(--color-link-hover);
+}
+
+/* ---------- Sizes ---------- */
+.sm {
+  --btn-h: var(--control-sm);
+  --btn-px: 12px;
+  border-radius: var(--radius-sm);
+  font-size: var(--text-caption);
+}
+
+.md {
+  --btn-h: var(--control-md);
+}
+
+.lg {
+  --btn-h: var(--control-lg);
+  --btn-px: 20px;
+  font-size: var(--text-body);
+  border-radius: var(--radius-lg);
+}
+
+.block {
+  width: 100%;
+}
+
+/* ---------- Loading ---------- */
+.loading {
+  color: transparent !important;
+  pointer-events: none;
+}
+
+.loading > *:not(.spinner) {
+  visibility: hidden;
+}
+
+.spinner {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid var(--btn-fg);
+  border-right-color: transparent;
+  animation: spin 700ms linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---------- Icon button ---------- */
+.iconButton {
+  composes: button;
+  width: var(--btn-h);
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.round {
+  border-radius: var(--radius-sm);
+}
+
+@media (pointer: coarse) {
+  .sm {
+    --btn-h: 36px;
+  }
+}

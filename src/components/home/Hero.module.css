@@ -1,0 +1,113 @@
+.hero {
+  position: relative;
+  padding-top: clamp(40px, 7vh, 88px);
+  padding-bottom: clamp(40px, 7vh, 80px);
+  border-bottom: 1px solid var(--color-border);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/*
+ * Girih lattice: eight-point stars (two squares, one turned 45°) joined by
+ * straight ties, with small diamonds where four tiles meet. Hairline teal on
+ * paper, fading out before it reaches the text.
+ */
+.ornament {
+  position: absolute;
+  inset: 0 0 0 38%;
+  z-index: -1;
+  background-image: var(--pattern-girih);
+  background-size: 64px 64px;
+  background-position: right top;
+  opacity: 0.55;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 55%);
+  mask-image: linear-gradient(90deg, transparent 0%, #000 55%);
+  pointer-events: none;
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  max-width: 17ch;
+  font-size: var(--text-display);
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+}
+
+.number {
+ color: var(--color-link);
+}
+
+.lead {
+  max-width: 54ch;
+  margin-top: 20px;
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-lg);
+  line-height: var(--leading-body);
+}
+
+.searchWrap {
+  width: 100%;
+  margin-top: clamp(28px, 4vh, 44px);
+}
+
+/* the lead and the search follow the headline in; backwards fill only, so no
+   transform is left behind on the search (its panels position against the page) */
+.lead,
+.searchWrap {
+  animation: rise var(--duration-reveal) var(--ease-out) backwards;
+}
+
+.lead {
+  animation-delay: 380ms;
+}
+
+.searchWrap {
+  animation-delay: 520ms;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lead,
+  .searchWrap {
+    animation: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .hero {
+    padding-top: 28px;
+    padding-bottom: 32px;
+  }
+
+  /* on phones the lattice sits above the headline as a thin band */
+  .ornament {
+    inset: 0 0 auto 0;
+    height: 120px;
+    -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 100%);
+    mask-image: linear-gradient(180deg, #000 0%, transparent 100%);
+  }
+
+  .title {
+    margin-top: 36px;
+    font-size: clamp(1.625rem, 7.4vw, 2.25rem);
+  }
+
+  .lead {
+    margin-top: 14px;
+    font-size: var(--text-body);
+  }
+
+  .searchWrap {
+    margin-top: 22px;
+  }
+}

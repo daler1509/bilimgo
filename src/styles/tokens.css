@@ -1,0 +1,398 @@
+/*
+ * BilimGo design tokens
+ * ---------------------------------------------------------------
+ * Layer 1 — primitives (raw palette, never used directly in components
+ *           unless there is no semantic token for the job).
+ * Layer 2 — semantic tokens (what components consume).
+ *
+ * Palette is derived from the BilimGo mark: deep navy wordmark,
+ * turquoise fold of the B and the gold dot inside the pin. Navy for text,
+ * turquoise for selections and links, gold only for primary actions —
+ * the blue and gold of Samarkand's tilework. Light and dark themes share
+ * every semantic name; [data-theme='dark'] below swaps the values.
+ *
+ * Breakpoints (CSS media queries can't read custom properties, so
+ * these values are mirrored in src/styles/breakpoints.ts):
+ *   sm 480px · md 768px · lg 1024px · xl 1280px · 2xl 1536px
+ */
+
+:root {
+  /* ---------- Primitives: navy (wordmark) ---------- */
+  --navy-950: #050f1c;
+  --navy-900: #0b1a2e;
+  --navy-800: #12263f;
+  --navy-700: #1b3552;
+  --navy-600: #2a4668;
+
+  /* ---------- Primitives: turquoise (the fold of the B) ---------- */
+  --teal-25: #f3fafa;
+  --teal-50: #e7f5f6;
+  --teal-100: #cdebee;
+  --teal-200: #9fd9df;
+  --teal-300: #6cc3cc;
+  --teal-400: #34abb8;
+  --teal-500: #0f96a6;
+  --teal-600: #0b8090;
+  --teal-700: #0a6b79;
+  --teal-800: #095763;
+  --teal-900: #08444e;
+
+  /* ---------- Primitives: gold (the dot in the pin) — the one accent ---------- */
+  --gold-50: #faf5ea;
+  --gold-100: #f3e7cb;
+  --gold-200: #e9d3a1;
+  --gold-300: #ddbd74;
+  --gold-400: #d6ad5c;
+  --gold-500: #cf9f45;
+  --gold-600: #b98a34;
+  --gold-700: #9a7128;
+  --gold-800: #7a5920;
+
+  /* ---------- Primitives: orange (legacy, warnings only) ---------- */
+  --orange-50: #fbf1e8;
+  --orange-100: #f6e0cc;
+  --orange-200: #edc39f;
+  --orange-400: #df8a4a;
+  --orange-500: #d2742c;
+  --orange-600: #b4530f;
+  --orange-700: #9a4612;
+  --orange-800: #823b0f;
+
+  /* ---------- Primitives: warm neutrals ---------- */
+  --paper: #f6f5f1;
+  --gray-0: #ffffff;
+  --gray-25: #fcfaf7;
+  --gray-50: #f5f1ea;
+  --gray-100: #efe9e1;
+  --gray-150: #e7e0d6;
+  --gray-200: #dcd3c7;
+  --gray-300: #c9bfb1;
+  --gray-400: #a39a8e;
+  --gray-500: #7f776c;
+  --gray-550: #6b645b; /* ≥ 4.5:1 on paper and white — smallest readable grey */
+  --gray-600: #534d45;
+  --gray-700: #3f3a34;
+  --gray-800: #2b2723;
+
+  /* ---------- Primitives: feedback ---------- */
+  --green-50: #e9f6ef;
+  --green-600: #0e7753;
+  --red-50: #fcefec;
+  --red-600: #c03a2e;
+  --amber-50: #fcf4e6;
+  --amber-600: #a2660f;
+
+  /* =============================================================
+   * Semantic tokens
+   * ============================================================= */
+
+  /* Surfaces: warm paper page, white cards */
+  --color-bg: var(--paper);
+  --color-bg-subtle: var(--gray-25);
+  --color-bg-muted: var(--gray-50);
+  --color-surface: var(--gray-0);
+  --color-surface-hover: var(--gray-50);
+  --color-surface-pressed: var(--gray-100);
+  --color-surface-inverse: var(--navy-900);
+  --color-overlay: rgb(11 26 46 / 0.44);
+
+  /* Text */
+  --color-text: var(--navy-900);
+  --color-text-secondary: var(--gray-600);
+  --color-text-tertiary: var(--gray-550);
+  --color-text-disabled: var(--gray-400);
+  --color-text-inverse: var(--gray-0);
+  --color-link: var(--teal-700);
+  --color-link-hover: var(--teal-800);
+
+  /* Borders */
+  --color-border: var(--gray-150);
+  --color-border-subtle: var(--gray-100);
+  --color-border-strong: var(--gray-200);
+  --color-border-hover: var(--gray-300);
+
+  /* Accent: primary actions only (search, sign up, call, apply). Navy text on gold: 7.2:1 */
+  --color-accent: var(--gold-500);
+  --color-accent-hover: var(--gold-600);
+  --color-accent-pressed: var(--gold-600);
+  --color-on-accent: var(--navy-900);
+
+  /* Ink: strong fills (selected chip, counters, toasts) and the text on them */
+  --color-ink: var(--navy-900);
+  --color-ink-hover: var(--navy-800);
+  --color-on-ink: var(--gray-0);
+  --color-ink-link: var(--teal-200);
+  /* A dark panel in both themes (the «add a centre» band) */
+  --color-panel: var(--navy-900);
+  /* Filled checkbox / progress in turquoise; white marks on it */
+  --color-check: var(--teal-700);
+  --color-focus: var(--teal-600);
+  /* Hairline edges on images and floating cards */
+  --color-hairline: rgb(11 26 46 / 0.08);
+  --color-shimmer: rgb(255 255 255 / 0.6);
+  /* Cover for a centre without a street photo: its mark on the tile pattern */
+  --color-plate: var(--teal-50);
+  --pattern-girih: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='%230a6b79' stroke-width='1' stroke-opacity='.5'%3E%3Crect x='18' y='18' width='28' height='28'/%3E%3Crect x='18' y='18' width='28' height='28' transform='rotate(45 32 32)'/%3E%3Cpath d='M0 32h12.2M51.8 32H64M32 0v12.2M32 51.8V64M0 6l6-6M58 0l6 6M64 58l-6 6M6 64l-6-6'/%3E%3C/g%3E%3C/svg%3E");
+
+  /* Map markers */
+  --pin-fill: var(--navy-900);
+  --pin-ink: var(--gray-0);
+  --pin-selected-fill: var(--gray-0);
+  --pin-selected-stroke: var(--navy-900);
+  --pin-muted: var(--gray-400);
+  --pin-ring: rgb(255 255 255 / 0.9);
+
+  /* Selected / active states (chips, options, current tab) */
+  --color-selected-bg: var(--teal-50);
+  --color-selected-bg-hover: var(--teal-100);
+  --color-selected-border: var(--teal-300);
+  --color-selected-text: var(--teal-800);
+
+  /* Selection on the map (selected marker) */
+  --color-selected: var(--navy-900);
+  --color-selected-ring: var(--gold-500);
+  /* «Популярный выбор»: the one place gold appears outside buttons */
+  --color-highlight-bg: var(--gold-100);
+  --color-highlight-text: var(--gold-800);
+  --color-highlight-ring: var(--gold-500);
+
+  /* Feedback */
+  --color-success: var(--green-600);
+  --color-success-subtle: var(--green-50);
+  --color-danger: var(--red-600);
+  --color-danger-subtle: var(--red-50);
+  --color-warning: var(--amber-600);
+  --color-warning-subtle: var(--amber-50);
+
+  /* Focus */
+  --focus-ring-color: rgb(11 128 144 / 0.45);
+  --focus-ring: 0 0 0 3px var(--focus-ring-color);
+  --focus-ring-inset: inset 0 0 0 2px var(--teal-600);
+
+  /* ---------- Map ---------- */
+  /* Neutral ground shown while the map loads or when it is unavailable */
+  --map-land: #e9edf2;
+
+  /* =============================================================
+   * Typography
+   * ============================================================= */
+  --font-sans: 'Onest Variable', 'Onest', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+  --font-display: 'Unbounded Variable', 'Unbounded', var(--font-sans);
+  --font-mono: ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* Unbounded is wide: display sizes are set a step smaller than a narrow face */
+  --text-display: clamp(1.875rem, 1.1rem + 2.9vw, 3.25rem);
+  --text-h1: clamp(1.625rem, 1.2rem + 1.4vw, 2.375rem);
+  --text-h2: clamp(1.375rem, 1.1rem + 0.9vw, 1.875rem);
+  --text-h3: 1.1875rem;
+  --text-h4: 1.0625rem;
+  --text-body-lg: clamp(1.0625rem, 1rem + 0.2vw, 1.1875rem);
+  --text-body: 0.9375rem;
+  --text-body-sm: 0.875rem;
+  --text-caption: 0.8125rem;
+  --text-micro: 0.75rem;
+
+  --leading-tight: 1.05;
+  --leading-heading: 1.18;
+  --leading-snug: 1.35;
+  --leading-body: 1.55;
+
+  --tracking-display: -0.038em;
+  --tracking-heading: -0.024em;
+  --tracking-tight: -0.012em;
+  --tracking-normal: 0;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 680;
+
+  /* =============================================================
+   * Spacing (4px base)
+   * ============================================================= */
+  --space-0: 0;
+  --space-0-5: 2px;
+  --space-1: 4px;
+  --space-1-5: 6px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 28px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-14: 56px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+  --space-32: 128px;
+
+  --section-gap: clamp(72px, 5rem + 3vw, 136px);
+  --gutter: clamp(16px, 2.6vw, 40px);
+  --container-max: 1280px;
+  --container-wide: 1440px;
+  --container-narrow: 960px;
+
+  /* =============================================================
+   * Radius — two values only
+   * ============================================================= */
+  --radius-sm: 8px; /* controls: buttons, inputs, chips, tags */
+  --radius-lg: 16px; /* surfaces: cards, panels, sheets, dialogs, maps */
+  /* legacy aliases — keep to the two values above */
+  --radius-xs: var(--radius-sm);
+  --radius-md: var(--radius-sm);
+  --radius-xl: var(--radius-lg);
+  --radius-2xl: var(--radius-lg);
+  /* circles only (dots, counters, avatars) — not a corner radius */
+  --radius-pill: 999px;
+
+  /* =============================================================
+   * Elevation — only for floating layers (popovers, dialogs, map controls)
+   * ============================================================= */
+  /* flat surfaces: a transparent shadow keeps shadow lists valid */
+  --shadow-xs: 0 0 #0000;
+  --shadow-sm: 0 0 #0000;
+  --shadow-md: 0 1px 2px rgb(43 39 35 / 0.06), 0 6px 18px -6px rgb(43 39 35 / 0.16);
+  --shadow-lg: 0 2px 4px rgb(43 39 35 / 0.05), 0 16px 40px -12px rgb(43 39 35 / 0.24);
+  --shadow-xl: var(--shadow-lg);
+  --shadow-inset-border: inset 0 0 0 1px var(--color-border);
+
+  /* =============================================================
+   * Motion
+   * ============================================================= */
+  --duration-instant: 80ms;
+  --duration-fast: 140ms;
+  --duration-base: 220ms;
+  --duration-slow: 360ms;
+  --duration-slower: 560ms;
+  /* text entering the screen word by word; digits rolling like a counter board */
+  --duration-reveal: 820ms;
+  --duration-count: 1500ms;
+
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.36, 0.64, 1);
+
+  /* =============================================================
+   * Layout & layering
+   * ============================================================= */
+  --header-height: 64px;
+  --mobile-nav-height: 64px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-top: env(safe-area-inset-top, 0px);
+
+  --z-base: 0;
+  --z-map-overlay: 10;
+  --z-map-controls: 20;
+  --z-sticky: 30;
+  --z-header: 40;
+  --z-sheet: 50;
+  --z-mobile-nav: 60;
+  --z-popover: 70;
+  --z-dialog: 80;
+  --z-toast: 90;
+
+  /* Control sizes */
+  --control-sm: 32px;
+  --control-md: 40px;
+  --control-lg: 48px;
+  --touch-target: 44px;
+}
+
+@media (max-width: 767px) {
+  :root {
+    --header-height: 56px;
+  }
+}
+
+/* =============================================================
+ * Dark theme — night navy, the same turquoise and gold
+ * Text contrast on surfaces: primary 15:1, secondary 9:1, tertiary 5.8:1
+ * ============================================================= */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --color-bg: #0b1320;
+  --color-bg-subtle: #0e1726;
+  --color-bg-muted: #152133;
+  --color-surface: #121d2d;
+  --color-surface-hover: #182538;
+  --color-surface-pressed: #1f2e44;
+  --color-surface-inverse: #e8edf3;
+  --color-overlay: rgb(2 6 12 / 0.62);
+
+  --color-text: #eef1f4;
+  --color-text-secondary: #b6bfcb;
+  --color-text-tertiary: #8e9aa9;
+  --color-text-disabled: #5b6677;
+  --color-text-inverse: var(--navy-900);
+  --color-link: #5fc5d0;
+  --color-link-hover: #8ad6de;
+
+  --color-border: #22324a;
+  --color-border-subtle: #1a283b;
+  --color-border-strong: #2c3f58;
+  --color-border-hover: #3c526f;
+
+  --color-accent: var(--gold-400);
+  --color-accent-hover: var(--gold-300);
+  --color-accent-pressed: var(--gold-300);
+  --color-on-accent: var(--navy-950);
+
+  --color-ink: #e8edf3;
+  --color-ink-hover: #ffffff;
+  --color-on-ink: var(--navy-950);
+  --color-ink-link: var(--teal-700);
+  --color-panel: #16253a;
+  --color-check: #0f8f9f;
+  --color-focus: #3fb4c1;
+  --color-hairline: rgb(255 255 255 / 0.08);
+  --color-shimmer: rgb(255 255 255 / 0.06);
+  --color-plate: #10303a;
+  --pattern-girih: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='%235fc5d0' stroke-width='1' stroke-opacity='.45'%3E%3Crect x='18' y='18' width='28' height='28'/%3E%3Crect x='18' y='18' width='28' height='28' transform='rotate(45 32 32)'/%3E%3Cpath d='M0 32h12.2M51.8 32H64M32 0v12.2M32 51.8V64M0 6l6-6M58 0l6 6M64 58l-6 6M6 64l-6-6'/%3E%3C/g%3E%3C/svg%3E");
+
+  --color-selected-bg: #10343c;
+  --color-selected-bg-hover: #154048;
+  --color-selected-border: #2a7d87;
+  --color-selected-text: #8fdbe3;
+  --color-selected: #eef1f4;
+  --color-selected-ring: var(--gold-400);
+  --color-highlight-bg: color-mix(in srgb, var(--gold-400) 16%, var(--color-surface));
+  --color-highlight-text: var(--gold-300);
+  --color-highlight-ring: color-mix(in srgb, var(--gold-400) 70%, transparent);
+
+  --color-success: #4cc38a;
+  --color-success-subtle: #0f2e22;
+  --color-danger: #ff7a6b;
+  --color-danger-subtle: #3a1814;
+  --color-warning: #e6b450;
+  --color-warning-subtle: #33270f;
+
+  --focus-ring-color: rgb(95 197 208 / 0.5);
+  --map-land: #172131;
+
+  --pin-fill: #e8edf3;
+  --pin-ink: var(--navy-900);
+  --pin-selected-fill: var(--navy-900);
+  --pin-selected-stroke: #e8edf3;
+  --pin-muted: #6b7789;
+  --pin-ring: rgb(11 19 32 / 0.9);
+
+  --shadow-md: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 22px -6px rgb(0 0 0 / 0.5);
+  --shadow-lg: 0 2px 4px rgb(0 0 0 / 0.3), 0 18px 44px -12px rgb(0 0 0 / 0.6);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0ms;
+    --duration-base: 0ms;
+    --duration-slow: 0ms;
+    --duration-slower: 0ms;
+    --duration-reveal: 0ms;
+    --duration-count: 0ms;
+  }
+}

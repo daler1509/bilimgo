@@ -1,0 +1,75 @@
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.scroller {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-block: 2px;
+  /* the last chip fades out at the edge: there is more to scroll; the end padding lets it scroll clear of the fade */
+  padding-inline-end: 24px;
+  -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 24px), transparent);
+  mask-image: linear-gradient(90deg, #000 calc(100% - 24px), transparent);
+}
+
+.scroller::-webkit-scrollbar {
+  display: none;
+}
+
+.divider {
+  width: 1px;
+  height: 24px;
+  background: var(--color-border);
+  flex-shrink: 0;
+}
+
+.panelList {
+  padding: 2px;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.reset {
+  flex-shrink: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--text-caption);
+  font-weight: var(--weight-medium);
+  height: 32px;
+  padding-inline: 10px;
+  border-radius: var(--radius-sm);
+  transition: background-color var(--duration-fast), color var(--duration-fast);
+}
+
+.reset:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-text);
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.tagsScroll {
+  composes: tags;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  /* the last chip fades out at the edge: there is more to scroll; the end padding lets it scroll clear of the fade */
+  padding-inline-end: 24px;
+  -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 24px), transparent);
+  mask-image: linear-gradient(90deg, #000 calc(100% - 24px), transparent);
+}
+
+.tagsScroll::-webkit-scrollbar {
+  display: none;
+}

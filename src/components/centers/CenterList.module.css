@@ -1,0 +1,66 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-bottom: 8px;
+}
+
+/* cards come in from just below, one after another; the first nine set the pace */
+.item {
+  animation: card-in 440ms var(--ease-out) both;
+  animation-delay: calc(var(--i, 0) * 45ms);
+}
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+.refreshing {
+  opacity: 0.55;
+  /* fast answers never dim the list — only a slow one does */
+  transition: opacity var(--duration-base) var(--ease-standard) 180ms;
+  pointer-events: none;
+}
+
+.progress {
+  position: sticky;
+  top: 0;
+  height: 2px;
+  margin-bottom: -2px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: var(--color-selected-bg-hover);
+  z-index: 1;
+}
+
+.progressBar {
+  width: 40%;
+  height: 100%;
+  border-radius: 2px;
+  background: var(--color-check);
+  animation: slide 1.1s var(--ease-in-out) infinite;
+}
+
+@keyframes slide {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(250%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .item {
+    animation: none;
+  }
+
+  .progressBar {
+    animation: none;
+    width: 100%;
+    opacity: 0.6;
+  }
+}

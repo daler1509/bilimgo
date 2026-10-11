@@ -1,0 +1,102 @@
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: var(--radius-md);
+  text-align: left;
+  transition: background-color var(--duration-fast);
+}
+
+.row:hover {
+  background: var(--color-bg-muted);
+}
+
+.row:focus-visible {
+  outline: none;
+  background: var(--color-bg-muted);
+  box-shadow: var(--focus-ring);
+}
+
+.selected {
+  background: var(--color-selected-bg);
+}
+
+.selected:hover {
+  background: var(--color-selected-bg-hover);
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+}
+
+.label {
+  display: block;
+  font-size: var(--text-body-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hint {
+  display: block;
+  font-size: var(--text-micro);
+  color: var(--color-text-tertiary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.count {
+  color: var(--color-text-tertiary);
+  font-size: var(--text-micro);
+  font-variant-numeric: tabular-nums;
+}
+
+.mark {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-xs);
+  border: 1.5px solid var(--color-border-strong);
+  color: transparent;
+  flex-shrink: 0;
+  transition:
+    background-color var(--duration-fast),
+    border-color var(--duration-fast),
+    color var(--duration-fast);
+}
+
+.radio {
+  border-radius: 50%;
+}
+
+.selected .mark {
+  background: var(--color-check);
+  border-color: var(--color-check);
+  color: #fff;
+}
+
+.groupTitle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 10px;
+  color: var(--color-text-secondary);
+  font-size: var(--text-caption);
+  font-weight: var(--weight-semibold);
+}
+
+/* a child option: indented under its parent with a guide line */
+.nested {
+  margin-left: 18px;
+  width: calc(100% - 18px);
+  box-shadow: inset 2px 0 0 var(--color-border);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}

@@ -1,0 +1,15 @@
+node_modules
+dist
+.vite
+.DS_Store
+*.local
+
+# environment — keys live only on your machine
+.env
+.env.*
+!.env.example
+
+# editor / agent local settings
+.claude/settings.local.json
+.vercel
+.env*

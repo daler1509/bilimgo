@@ -1,0 +1,152 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-header);
+  height: var(--header-height);
+  /* solid, in the page colour: nothing shows through (no frosted glass) */
+  background: var(--color-bg);
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--duration-base) var(--ease-standard);
+}
+
+.scrolled,
+.app {
+  border-bottom-color: var(--color-border);
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  height: 100%;
+}
+
+.app .inner {
+  max-width: none;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding-inline: 12px;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-sm);
+  font-weight: var(--weight-medium);
+  transition:
+    color var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard);
+}
+
+.link:hover {
+  color: var(--color-text);
+  background: var(--color-surface-hover);
+}
+
+.link[aria-current='page'] {
+  color: var(--color-text);
+}
+
+.link[aria-current='page']::after {
+  content: '';
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: calc((var(--header-height) - 36px) / -2);
+  height: 2px;
+  border-radius: 2px 2px 0 0;
+  background: var(--color-text);
+}
+
+.spacer {
+  flex: 1;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.settings {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.lists {
+  align-items: center;
+  gap: 2px;
+}
+
+.listLink {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding-inline: 10px 12px;
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-sm);
+  font-weight: var(--weight-medium);
+  transition:
+    color var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard);
+}
+
+.listLink:hover {
+  color: var(--color-text);
+  background: var(--color-surface-hover);
+}
+
+.listLink[aria-current='page'] {
+  color: var(--color-text);
+  background: var(--color-bg-muted);
+}
+
+.listLink:focus-visible,
+.link:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.count {
+  display: inline-grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  padding-inline: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--color-text);
+  color: var(--color-bg);
+  font-size: 11px;
+  font-weight: var(--weight-semibold);
+  font-variant-numeric: tabular-nums;
+}
+
+.desktopOnly {
+  display: flex;
+}
+
+@media (max-width: 1023px) {
+  .desktopOnly {
+    display: none;
+  }
+  .inner {
+    gap: 12px;
+  }
+  /* Search & Map own the whole screen on compact layouts */
+  .app {
+    display: none;
+  }
+}

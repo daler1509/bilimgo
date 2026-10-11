@@ -1,0 +1,230 @@
+.hint {
+  margin-bottom: 16px;
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-sm);
+}
+
+.scroller {
+  overflow-x: auto;
+  border-radius: var(--radius-lg);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+  overscroll-behavior-x: contain;
+}
+
+.scroller:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 1px var(--color-border), var(--focus-ring);
+}
+
+.table {
+  width: 100%;
+  min-width: calc(180px + var(--cols) * 220px);
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+  font-size: var(--text-body-sm);
+}
+
+.corner,
+.rowLabel {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  width: 180px;
+  background: var(--color-bg-subtle);
+  box-shadow: inset -1px 0 0 var(--color-border-subtle);
+}
+
+.head {
+  padding: 18px 16px 16px;
+  vertical-align: top;
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.headInner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding-right: 28px;
+}
+
+.name {
+  font-size: var(--text-body);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--leading-snug);
+  border-radius: var(--radius-xs);
+}
+
+.name:hover {
+  color: var(--color-link);
+}
+
+.branch {
+  color: var(--color-text-secondary);
+  font-weight: var(--weight-regular);
+}
+
+.name:focus-visible,
+.remove:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.remove {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-tertiary);
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
+}
+
+.remove:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-text);
+}
+
+.rowLabel {
+  padding: 12px 16px;
+  color: var(--color-text-secondary);
+  font-weight: var(--weight-regular);
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.cell {
+  padding: 12px 16px;
+  vertical-align: top;
+  border-bottom: 1px solid var(--color-border-subtle);
+  overflow-wrap: anywhere;
+}
+
+tbody tr:last-child .rowLabel,
+tbody tr:last-child .cell {
+  border-bottom: none;
+}
+
+.cell [data-open='true'] {
+  color: var(--color-success);
+  font-weight: var(--weight-medium);
+}
+
+.footCell {
+  padding-block: 16px;
+}
+
+.noData {
+  color: var(--color-text-tertiary);
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.link {
+  color: var(--color-link);
+  font-weight: var(--weight-medium);
+}
+
+.link:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.programs {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.more {
+  color: var(--color-text-tertiary);
+}
+
+/* ---------- add from favourites ---------- */
+.add {
+  margin-top: 40px;
+}
+
+.addTitle {
+  margin-bottom: 12px;
+  font-size: var(--text-h4);
+  font-weight: var(--weight-semibold);
+}
+
+.addList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.addItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 44px;
+  padding: 6px 12px 6px 6px;
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+  font-size: var(--text-body-sm);
+  font-weight: var(--weight-medium);
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard);
+}
+
+.addItem:hover {
+  background: var(--color-surface-hover);
+  box-shadow: inset 0 0 0 1px var(--color-border-hover);
+}
+
+.addItem:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.addItem > svg {
+  color: var(--color-text-tertiary);
+}
+
+.addName {
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 767px) {
+  .table {
+    min-width: calc(112px + var(--cols) * 184px);
+    font-size: var(--text-caption);
+  }
+
+  .corner,
+  .rowLabel {
+    width: 112px;
+  }
+
+  .rowLabel,
+  .cell {
+    padding: 10px 12px;
+  }
+
+  .head {
+    padding: 14px 12px 12px;
+  }
+}

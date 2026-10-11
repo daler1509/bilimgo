@@ -1,0 +1,75 @@
+.section + .section {
+  margin-top: 8px;
+  padding-top: 18px;
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.section {
+  padding-bottom: 10px;
+}
+
+.head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.title {
+  font-size: var(--text-body-sm);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-tight);
+}
+
+.note {
+  color: var(--color-text-tertiary);
+  font-size: var(--text-micro);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2px;
+}
+
+@media (max-width: 599px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+}
+
+.count {
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-sm);
+}
+
+.areaRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  background: var(--color-bg-muted);
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-sm);
+}
+
+/* a parent direction takes the full row; its children follow in the grid */
+.fullRow {
+  grid-column: 1 / -1;
+}
