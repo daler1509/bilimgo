@@ -29,6 +29,10 @@ export const priceLine = (c: Pick<Center, 'priceFrom'>) =>
 /** The photo of the building from outside, if the centre published one */
 export const exteriorPhoto = (c: Pick<Center, 'photos'>) => c.photos?.find((p) => p.view === 'exterior') ?? null;
 
+/** What a course request can be about: published courses or, without them, the directions */
+export const leadCourses = (c: Center): string[] =>
+  c.programs?.length ? c.programs.map((p) => p.title) : visibleCategories(c).map((id) => CATEGORY_BY_ID[id].label);
+
 export const primaryCategory = (c: Center): CategoryId | null => visibleCategories(c)[0] ?? null;
 
 /** Most specific first: «English Kids» is a kids course, «CEFR и ДТМ» an exam one */

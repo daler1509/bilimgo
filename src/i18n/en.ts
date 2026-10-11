@@ -178,8 +178,10 @@ export const en: Dict = {
     fromDirections: 'The centre doesn’t publish a course list. These are the subjects it teaches.',
   },
   badges: {
-    popular: 'Popular choice',
-    popularHint: 'One of the five places in the catalogue rated most often on Yandex Maps',
+    popular: 'Popular',
+    popularHint: 'Rated often on Yandex Maps',
+    best: 'Best choice',
+    bestHint: 'Among the most rated centres on Yandex Maps',
     network: (n: number) => `${n} ${n === 1 ? 'branch' : 'branches'}`,
     networkHint: 'How many addresses this network has in the catalogue',
   },

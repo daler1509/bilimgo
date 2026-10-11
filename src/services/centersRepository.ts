@@ -117,20 +117,25 @@ interface Snapshot {
 }
 
 /**
- * «Популярный выбор»: the places rated most often on Yandex Maps, one per
- * network so a big chain can't take every slot. A fact from the cards, not
- * a quality verdict — the count itself is never shown.
+ * Marks in lists, both read off the number of ratings on a place's Yandex Maps
+ * card (the number itself is never shown):
+ *  «Популярно» — at least POPULAR_MIN_RATINGS ratings;
+ *  «Лучший выбор» — the most rated place of each of the BEST_PICKS most rated
+ *  networks. It is the catalogue's own pick, not a third-party award.
  */
-export const POPULAR_PICKS = 5;
+export const POPULAR_MIN_RATINGS = 100;
+export const BEST_PICKS = 3;
 
 function markPopular(centers: Center[]) {
-  const brands = new Set<string>();
   const ranked = centers.filter((c) => (c.yandexRatingCount ?? 0) > 0).sort((a, b) => b.yandexRatingCount! - a.yandexRatingCount! || a.name.localeCompare(b.name, 'ru'));
+  for (const c of ranked) if (c.yandexRatingCount! >= POPULAR_MIN_RATINGS) c.popular = true;
+  const brands = new Set<string>();
   for (const c of ranked) {
-    if (brands.size >= POPULAR_PICKS) break;
+    if (brands.size >= BEST_PICKS) break;
     const brand = c.brand ?? c.id;
     if (brands.has(brand)) continue;
     brands.add(brand);
+    c.best = true;
     c.popular = true;
   }
 }

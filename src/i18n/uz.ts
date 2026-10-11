@@ -181,8 +181,10 @@ export const uz: Dict = {
     fromDirections: 'Markaz kurslar roʻyxatini eʼlon qilmaydi. Quyida u oʻrgatadigan yoʻnalishlar.',
   },
   badges: {
-    popular: 'Ommabop tanlov',
-    popularHint: 'Katalogdagi Yandex Xaritalarda eng koʻp baholanadigan beshta markazdan biri',
+    popular: 'Ommabop',
+    popularHint: 'Yandex Xaritalarda koʻp baholangan',
+    best: 'Eng yaxshi tanlov',
+    bestHint: 'Yandex Xaritalarda eng koʻp baholangan markazlar orasida',
     network: (n: number) => `${n} ta filial`,
     networkHint: 'Bu tarmoqning katalogdagi manzillari soni',
   },

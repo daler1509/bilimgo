@@ -171,8 +171,10 @@ export interface Center extends Omit<CenterRecord, 'address' | 'summary' | 'abou
   audienceNote?: string;
   photos?: CenterPhoto[];
   districtId: DistrictId;
-  /** One of the most rated places of the catalogue on Yandex Maps (see POPULAR_PICKS) */
+  /** Rated often on Yandex Maps: «Популярно» (see POPULAR_MIN_RATINGS) */
   popular?: boolean;
+  /** One of the most rated networks of the catalogue: «Лучший выбор» (see BEST_PICKS) */
+  best?: boolean;
   /** Places of the same network in the catalogue, this one included */
   networkSize: number;
   yandexUrl: string;

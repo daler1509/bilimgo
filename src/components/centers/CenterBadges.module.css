@@ -1,9 +1,21 @@
+.stack {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.row {
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
 .badge {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  height: 22px;
-  padding-inline: 7px 8px;
+  height: 24px;
+  padding-inline: 8px 9px;
   border-radius: 6px;
   font-size: var(--text-caption);
   font-weight: var(--weight-semibold);
@@ -15,9 +27,20 @@
   flex-shrink: 0;
 }
 
+/* on a photo: solid fills and a soft shadow keep them readable on any picture */
+.best,
 .popular {
-  background: var(--color-highlight-bg);
-  color: var(--color-highlight-text);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.28);
+}
+
+.best {
+  background: var(--color-ink);
+  color: var(--color-on-ink);
+}
+
+.popular {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
 }
 
 .network {
