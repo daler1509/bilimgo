@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight, MapPin, Pause, Play, Star } from 'lucide-react';
+import { PlaceBadges } from '@/components/centers/CenterBadges';
 import { CenterLink } from '@/components/centers/CenterLink';
 import { CenterLogo } from '@/components/centers/CenterLogo';
 import { categoryLine, districtLabel, exteriorPhoto, openNow, priceLine } from '@/components/centers/centerText';
@@ -180,10 +181,12 @@ export function CenterCarousel({ centers, label }: { centers: Center[]; label: s
                       decoding="async"
                       draggable={false}
                     />
+                    <PlaceBadges center={c} className={s.badges} />
                   </span>
                 ) : (
                   <span className={cn(s.cover, s.plate)} aria-hidden="true">
                     <CenterLogo center={c} size={72} className={s.plateLogo} />
+                    <PlaceBadges center={c} className={s.badges} />
                   </span>
                 )}
                 <span className={cn(s.top, !cover && s.topPlain)}>
