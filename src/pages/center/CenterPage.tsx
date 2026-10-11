@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate, useParams } from 'react-router';
 import { ArrowLeft, ArrowUpRight, AtSign, ChevronRight, Clock3, Globe, Map as MapIcon, MapPin, Navigation, Phone, Send, Share2, Tag } from 'lucide-react';
 import { CategoryGlyph } from '@/components/centers/CategoryGlyph';
 import { CenterCard } from '@/components/centers/CenterCard';
-import { NetworkBadge, PopularBadge } from '@/components/centers/CenterBadges';
+import { NetworkBadge, PlaceBadges } from '@/components/centers/CenterBadges';
 import { backTarget, CenterLink, type FromState } from '@/components/centers/CenterLink';
 import { CenterLogo } from '@/components/centers/CenterLogo';
 import {
@@ -234,7 +234,7 @@ export function CenterPage() {
 
             {(c.popular || c.networkSize > 1) && (
               <div className={s.badges}>
-                {c.popular && <PopularBadge explain />}
+                <PlaceBadges center={c} row />
                 <NetworkBadge center={c} />
               </div>
             )}

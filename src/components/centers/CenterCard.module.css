@@ -2,8 +2,6 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 16px 16px 10px;
   border-radius: var(--radius-lg);
   background: var(--color-surface);
   box-shadow: inset 0 0 0 1px var(--color-border);
@@ -17,14 +15,11 @@
   box-shadow: inset 0 0 0 1px var(--color-border-hover), var(--shadow-sm);
 }
 
-/* «Популярный выбор»: a gold edge, kept on hover */
-.popularCard {
+/* «Лучший выбор»: a gold edge, kept on hover */
+.bestCard,
+.bestCard:hover,
+.bestCard.highlighted {
   box-shadow: inset 0 0 0 1.5px var(--color-highlight-ring);
-}
-
-.popularCard:hover,
-.popularCard.highlighted {
-  box-shadow: inset 0 0 0 1.5px var(--color-highlight-ring), var(--shadow-sm);
 }
 
 .card.selected,
@@ -32,16 +27,203 @@
   box-shadow: inset 0 0 0 1.5px var(--color-text), var(--shadow-sm);
 }
 
-.top {
+/* ---------------- photo strip ---------------- */
+.media {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  background: var(--color-bg-muted);
+  cursor: pointer;
+}
+
+.strip {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  border-radius: inherit;
+}
+
+.strip::-webkit-scrollbar {
+  display: none;
+}
+
+.slide {
+  flex: 0 0 100%;
+  height: 100%;
+  scroll-snap-align: start;
+}
+
+.slide img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* portrait pictures keep their upper part: faces and signs sit there */
+  object-position: 50% 30%;
+}
+
+/* no photo: a shallower band with the centre's mark on the tile pattern */
+.plate {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: start;
-  column-gap: 14px;
+  place-items: center;
+  aspect-ratio: 16 / 6;
+  background: var(--color-plate);
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.plate::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: var(--pattern-girih);
+  background-size: 56px 56px;
+  background-position: center;
+  opacity: 0.5;
+}
+
+.plateMark {
+  display: grid;
+  place-items: center;
+}
+
+/* corners of the picture */
+.badges {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.fav,
+.media .compare {
+  position: absolute;
+  z-index: 2;
+  background: color-mix(in srgb, var(--color-surface) 92%, transparent);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.22);
+}
+
+.fav {
+  top: 8px;
+  right: 8px;
+  width: 36px;
+  height: 36px;
+  margin: 0;
+  border-radius: 50%;
+}
+
+.media .compare {
+  right: 8px;
+  bottom: 8px;
+  height: 30px;
+  margin: 0;
+  padding-inline: 8px 10px;
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+}
+
+.logo {
+  position: absolute;
+  left: 14px;
+  bottom: -24px;
+  z-index: 2;
+  box-shadow: 0 0 0 3px var(--color-surface);
+}
+
+.arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  display: none;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--color-surface) 92%, transparent);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.24);
+  translate: 0 -50%;
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--ease-standard);
+}
+
+.arrowPrev {
+  left: 8px;
+}
+
+.arrowNext {
+  right: 8px;
+}
+
+.arrow:disabled {
+  visibility: hidden;
+}
+
+/* arrows only where a mouse can hover; on touch the strip is swiped */
+@media (hover: hover) and (pointer: fine) {
+  .arrow {
+    display: grid;
+  }
+
+  .media:hover .arrow,
+  .arrow:focus-visible {
+    opacity: 1;
+  }
+}
+
+.arrow:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.dots {
+  position: absolute;
+  left: 50%;
+  bottom: 10px;
+  z-index: 1;
+  display: flex;
+  gap: 5px;
+  padding: 4px 7px;
+  border-radius: 999px;
+  background: rgb(0 0 0 / 0.32);
+  translate: -50% 0;
+  pointer-events: none;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.55);
+  transition: background-color var(--duration-fast), transform var(--duration-fast) var(--ease-out);
+}
+
+.dot[data-on] {
+  background: #fff;
+  transform: scale(1.25);
+}
+
+/* ---------------- body ---------------- */
+.body {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 34px 16px 16px;
+}
+
+/* no strip photo overlapping: the plate carries its own mark */
+.plate + .body {
+  padding-top: 16px;
 }
 
 .head {
   min-width: 0;
-  padding-top: 2px;
 }
 
 .title {
@@ -54,27 +236,17 @@
   white-space: nowrap;
 }
 
-/* stretched primary action: the whole card is the hit area */
+/* the name is the keyboard route to the primary action */
 .primary {
   color: inherit;
   text-align: left;
   font: inherit;
   letter-spacing: inherit;
-}
-
-.primary::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-xs);
 }
 
 .primary:focus-visible {
   outline: none;
-}
-
-.primary:focus-visible::after {
   box-shadow: var(--focus-ring);
 }
 
@@ -88,16 +260,10 @@
   white-space: nowrap;
 }
 
-.fav {
-  position: relative;
-  z-index: 1;
-  margin: -6px -8px 0 0;
-}
-
 .facts {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 6px;
   font-size: var(--text-caption);
   color: var(--color-text-secondary);
 }
@@ -105,8 +271,14 @@
 .fact {
   display: flex;
   align-items: center;
-  gap: 8px;
+  flex-wrap: wrap;
+  gap: 6px 10px;
   min-width: 0;
+}
+
+/* the address stays on one line with its pin and is cut with an ellipsis */
+.facts > li:first-child {
+  flex-wrap: nowrap;
 }
 
 .fact > svg,
@@ -129,13 +301,10 @@
 .status {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
-.status[data-open='true'] {
-  color: var(--color-success);
-}
-
+.status[data-open='true'],
 .status[data-open='true'] > svg {
   color: var(--color-success);
 }
@@ -143,86 +312,36 @@
 .free {
   display: inline-flex;
   align-items: center;
-  height: 20px;
-  padding-inline: 7px;
-  border-radius: var(--radius-xs);
+  height: 22px;
+  padding-inline: 8px;
+  border-radius: 6px;
   background: var(--color-selected-bg);
   color: var(--color-link);
   font-weight: var(--weight-semibold);
-}
-
-.badge {
-  margin-bottom: 6px;
 }
 
 .footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding-top: 8px;
-  border-top: 1px solid var(--color-border-subtle);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding-top: 4px;
 }
 
 .action {
-  z-index: 1;
-}
-
-.details,
-.detailsHint {
-  position: relative;
-  z-index: 1;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  height: 30px;
-  padding-inline: 8px;
-  margin-right: -8px;
-  border-radius: var(--radius-sm);
-  color: var(--color-link);
-  font-size: var(--text-caption);
-  font-weight: var(--weight-semibold);
-  transition: background-color var(--duration-fast) var(--ease-standard);
-}
-
-.detailsHint {
-  z-index: 0;
-  pointer-events: none;
-}
-
-.details svg,
-.detailsHint svg {
-  transition: transform var(--duration-base) var(--ease-out);
-}
-
-.details:hover {
-  background: var(--color-selected-bg);
-}
-
-.details:hover svg,
-.card:hover .detailsHint svg {
-  transform: translateX(2px);
-}
-
-.details:focus-visible {
-  outline: none;
-  box-shadow: var(--focus-ring);
-}
-
-.compact {
-  gap: 10px;
-  padding: 14px 14px 8px;
-}
-
-@media (pointer: coarse) {
-  .details,
-  .detailsHint {
-    height: 36px;
-  }
+  min-width: 0;
 }
 
 /* the branch after a shared network name: same line, lighter */
 .branch {
   color: var(--color-text-secondary);
   font-weight: var(--weight-regular);
+}
+
+/* compact lists (phones' result list, similar places): a shorter picture */
+.compact .media {
+  aspect-ratio: 16 / 9;
+}
+
+.compact .body {
+  gap: 10px;
 }

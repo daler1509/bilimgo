@@ -2,7 +2,7 @@ import { Clock3, MapPin, Phone, X } from 'lucide-react';
 import { ButtonLink, IconButton } from '@/components/ui/Button';
 import type { Center } from '@/data/types';
 import { t } from '@/i18n';
-import { PopularBadge } from './CenterBadges';
+import { PlaceBadges } from './CenterBadges';
 import { useFromHere } from './CenterLink';
 import { CenterLogo } from './CenterLogo';
 import { categoryLine, distanceFromCenter, openNow, telHref } from './centerText';
@@ -31,7 +31,7 @@ export function CenterPreviewCard({ center: c, detailsHref, onClose, className }
       <div className={s.head}>
         <CenterLogo center={c} size={44} />
         <div className={s.headText}>
-          {c.popular && <PopularBadge className={s.badge} />}
+          <PlaceBadges center={c} row className={s.badge} />
           <p className={s.title}>
             {c.name}
             {c.branch && <span className={s.branch}> {c.branch}</span>}
