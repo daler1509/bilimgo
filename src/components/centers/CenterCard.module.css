@@ -66,14 +66,12 @@
   object-position: 50% 30%;
 }
 
-/* no photo: a shallower band with the centre's mark on the tile pattern */
+/* no photo: the same frame as a photo, the tile pattern in its place; the
+   centre's mark sits on its lower edge exactly as it does on a picture, so
+   every card in a list has the same height */
 .plate {
-  display: grid;
-  place-items: center;
-  aspect-ratio: 16 / 6;
   background: var(--color-plate);
   isolation: isolate;
-  overflow: hidden;
 }
 
 .plate::before {
@@ -81,15 +79,11 @@
   position: absolute;
   inset: 0;
   z-index: -1;
+  border-radius: inherit;
   background-image: var(--pattern-girih);
   background-size: 56px 56px;
   background-position: center;
   opacity: 0.5;
-}
-
-.plateMark {
-  display: grid;
-  place-items: center;
 }
 
 /* corners of the picture */
@@ -215,11 +209,6 @@
   flex-direction: column;
   gap: 12px;
   padding: 34px 16px 16px;
-}
-
-/* no strip photo overlapping: the plate carries its own mark */
-.plate + .body {
-  padding-top: 16px;
 }
 
 .head {

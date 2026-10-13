@@ -167,11 +167,7 @@ function Media({ center: c, photos, onPrimary }: { center: Center; photos: NonNu
             </li>
           ))}
         </ul>
-      ) : (
-        <span className={s.plateMark} aria-hidden="true">
-          <CenterLogo center={c} size={64} />
-        </span>
-      )}
+      ) : null}
 
       <PlaceBadges center={c} className={s.badges} />
       <FavoriteButton id={c.id} name={c.name} className={s.fav} />
@@ -193,7 +189,7 @@ function Media({ center: c, photos, onPrimary }: { center: Center; photos: NonNu
         </>
       )}
 
-      {photos.length > 0 && <CenterLogo center={c} size={48} className={s.logo} />}
+      <CenterLogo center={c} size={48} className={s.logo} />
     </div>
   );
 }
