@@ -17,6 +17,7 @@ import type {
   LocalText,
   ProgramRecord,
   SourceRef,
+  TeacherRecord,
   TeachingLanguage,
 } from '../data/types';
 
@@ -44,6 +45,7 @@ export interface CenterRow {
   programs: { title: Legacy<LocalText>; note?: Legacy<LocalText> }[] | null;
   ages: AgeGroup[] | null;
   audience_note: Legacy<LocalText> | null;
+  lessons: Legacy<LocalText>[] | null;
   formats: LearningFormat[] | null;
   teaching: TeachingLanguage[] | null;
   features: CenterFeature[] | null;
@@ -51,6 +53,7 @@ export interface CenterRow {
   price_from: CenterRecord['priceFrom'] | null;
   rating: CenterRecord['rating'] | null;
   photos: (Omit<CenterPhotoRecord, 'alt'> & { alt: Legacy<LocalText> })[] | null;
+  teachers: { name: string; role?: Legacy<LocalText>; note?: Legacy<LocalText>; photo?: TeacherRecord['photo'] }[] | null;
   yandex_id: string;
   yandex_rating_count: number | null;
   sources: SourceRef[];
@@ -61,7 +64,7 @@ export interface CenterRow {
 
 /** Columns the site reads — everything except bookkeeping it doesn't need */
 export const CENTER_COLUMNS =
-  'id,name,alt_name,brand,branch,kind,categories,lat,lng,address,phones,website,telegram,instagram,opening_hours,summary,about,programs,ages,audience_note,formats,teaching,features,logo,price_from,rating,photos,yandex_id,yandex_rating_count,sources,published,updated_at';
+  'id,name,alt_name,brand,branch,kind,categories,lat,lng,address,phones,website,telegram,instagram,opening_hours,summary,about,programs,ages,audience_note,lessons,formats,teaching,features,logo,price_from,rating,photos,teachers,yandex_id,yandex_rating_count,sources,published,updated_at';
 
 const text = (v: string | null | undefined) => (v && v.trim() ? v : undefined);
 
@@ -92,6 +95,14 @@ const programOf = (p: { title: Legacy<LocalText>; note?: Legacy<LocalText> }): P
   const note = localText(p.note);
   return note ? { title, note } : { title };
 };
+const teacherOf = (x: NonNullable<CenterRow['teachers']>[number]): TeacherRecord | null => {
+  const name = text(x?.name)?.trim();
+  if (!name) return null;
+  const role = localText(x.role);
+  const note = localText(x.note);
+  const photo = x.photo && url(x.photo.src) && url(x.photo.sourceUrl) ? x.photo : undefined;
+  return { name, ...(role && { role }), ...(note && { note }), ...(photo && { photo }) };
+};
 const list = <T>(v: T[] | null | undefined) => (v && v.length ? v : undefined);
 const orNull = <T>(v: T | undefined) => (v === undefined ? null : v);
 const listOrNull = <T>(v: T[] | undefined) => (v && v.length ? v : null);
@@ -118,6 +129,7 @@ export function fromRow(r: CenterRow): CenterRecord {
     programs: list((r.programs ?? []).map(programOf).filter((p): p is ProgramRecord => !!p)),
     ages: list(r.ages),
     audienceNote: localText(r.audience_note),
+    lessons: list((r.lessons ?? []).map(localText).filter((p): p is LocalText => !!p)),
     formats: list(r.formats),
     teaching: list(r.teaching),
     features: list(r.features),
@@ -129,6 +141,7 @@ export function fromRow(r: CenterRow): CenterRecord {
         .filter((p) => url(p.src) && url(p.sourceUrl))
         .map((p) => ({ ...p, alt: localText(p.alt) ?? { ru: '' } })),
     ),
+    teachers: list((r.teachers ?? []).map(teacherOf).filter((x): x is TeacherRecord => !!x)),
     yandexId: r.yandex_id,
     yandexRatingCount: r.yandex_rating_count ?? undefined,
     sources: (r.sources ?? []).filter((x) => url(x.url)),
@@ -157,6 +170,7 @@ export function toRow(c: CenterRecord, published = true): CenterRow {
     programs: listOrNull((c.programs ?? []).map(programOf).filter((p): p is ProgramRecord => !!p)),
     ages: listOrNull(c.ages),
     audience_note: orNull(localText(c.audienceNote)),
+    lessons: listOrNull((c.lessons ?? []).map(localText).filter((p): p is LocalText => !!p)),
     formats: listOrNull(c.formats),
     teaching: listOrNull(c.teaching),
     features: listOrNull(c.features),
@@ -164,6 +178,7 @@ export function toRow(c: CenterRecord, published = true): CenterRow {
     price_from: orNull(c.priceFrom),
     rating: orNull(c.rating),
     photos: listOrNull(c.photos),
+    teachers: listOrNull((c.teachers ?? []).map((x) => teacherOf(x)).filter((x): x is TeacherRecord => !!x)),
     yandex_id: c.yandexId.trim(),
     yandex_rating_count: c.yandexRatingCount ?? null,
     sources: c.sources,

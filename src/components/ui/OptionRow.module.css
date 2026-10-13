@@ -1,4 +1,6 @@
 .row {
+  position: relative;
+  isolation: isolate;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -6,11 +8,33 @@
   padding: 8px 10px;
   border-radius: var(--radius-md);
   text-align: left;
-  transition: background-color var(--duration-fast);
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    transform var(--duration-fast) var(--ease-out);
+}
+
+/* the chosen state is a plate that settles under the row, not a colour flip */
+.row::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--color-selected-bg);
+  opacity: 0;
+  transform: scale(0.96);
+  transition:
+    opacity var(--duration-base) var(--ease-standard),
+    transform var(--duration-slow) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-standard);
 }
 
 .row:hover {
   background: var(--color-bg-muted);
+}
+
+.row:active {
+  transform: scale(0.988);
 }
 
 .row:focus-visible {
@@ -19,11 +43,17 @@
   box-shadow: var(--focus-ring);
 }
 
-.selected {
-  background: var(--color-selected-bg);
+.selected,
+.selected:hover {
+  background: transparent;
 }
 
-.selected:hover {
+.selected::before {
+  opacity: 1;
+  transform: none;
+}
+
+.selected:hover::before {
   background: var(--color-selected-bg-hover);
 }
 
@@ -58,28 +88,86 @@
 }
 
 .mark {
+  position: relative;
   display: grid;
   place-items: center;
   width: 20px;
   height: 20px;
   border-radius: var(--radius-xs);
   border: 1.5px solid var(--color-border-strong);
-  color: transparent;
+  color: #fff;
   flex-shrink: 0;
   transition:
-    background-color var(--duration-fast),
-    border-color var(--duration-fast),
-    color var(--duration-fast);
+    background-color var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard),
+    transform var(--duration-slow) var(--ease-spring);
 }
 
 .radio {
   border-radius: 50%;
 }
 
+/* the tick draws itself */
+.mark svg {
+  overflow: visible;
+}
+
+.mark path {
+  stroke-dasharray: 24;
+  stroke-dashoffset: 24;
+  transition: stroke-dashoffset var(--duration-base) var(--ease-out);
+}
+
 .selected .mark {
   background: var(--color-check);
   border-color: var(--color-check);
-  color: #fff;
+}
+
+.selected .mark path {
+  stroke-dashoffset: 0;
+  transition-delay: 70ms;
+}
+
+/* a ring leaves the box at the moment of choosing, never when a list opens */
+.mark::after {
+  content: '';
+  position: absolute;
+  inset: -1.5px;
+  border-radius: inherit;
+  border: 2px solid var(--color-check);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.chosen .mark {
+  animation: mark-pop var(--duration-slow) var(--ease-spring);
+}
+
+.chosen .mark::after {
+  animation: mark-ring 520ms var(--ease-out);
+}
+
+@keyframes mark-pop {
+  0% {
+    transform: scale(0.82);
+  }
+  60% {
+    transform: scale(1.14);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes mark-ring {
+  0% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.9);
+  }
 }
 
 .groupTitle {
@@ -93,10 +181,19 @@
   font-weight: var(--weight-semibold);
 }
 
-/* a child option: indented under its parent with a guide line */
+/* a child option: indented under its parent, a guide line runs down the margin */
 .nested {
   margin-left: 18px;
   width: calc(100% - 18px);
-  box-shadow: inset 2px 0 0 var(--color-border);
-  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.nested::after {
+  content: '';
+  position: absolute;
+  left: -10px;
+  top: -1px;
+  bottom: -1px;
+  width: 2px;
+  border-radius: 1px;
+  background: var(--color-border);
 }

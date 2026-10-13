@@ -318,6 +318,32 @@
   line-height: 1.6;
 }
 
+/* a short list of facts inside a definition row: a tick-mark bullet, not a wall of text */
+.lessonList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.lessonList li {
+  position: relative;
+  padding-left: 18px;
+  font-weight: var(--weight-regular);
+  line-height: 1.45;
+}
+
+.lessonList li::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 0.62em;
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
+  background: var(--color-accent);
+  rotate: 45deg;
+}
+
 .placeholder {
   max-width: 60ch;
   color: var(--color-text-tertiary);

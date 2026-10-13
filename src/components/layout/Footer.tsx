@@ -3,9 +3,7 @@ import { Logo } from '@/components/brand/Logo';
 import { CATEGORY_BY_ID } from '@/data/categories';
 import { DISTRICT_BY_ID } from '@/data/districts';
 import type { CategoryId, DistrictId } from '@/data/types';
-import { fill, t } from '@/i18n';
-import { formatDay } from '@/lib/dates';
-import { useFacetCounts } from '@/state/useCenterSearch';
+import { t } from '@/i18n';
 import s from './Footer.module.css';
 
 /* The bottom tab bar already covers Search, Map, Favourites and Compare —
@@ -14,7 +12,6 @@ const CATEGORY_LINKS: CategoryId[] = ['languages', 'programming', 'university', 
 const DISTRICT_LINKS: DistrictId[] = ['center', 'gagarin', 'afrasiab', 'university'];
 
 export function Footer() {
-  const counts = useFacetCounts();
   const groups = [
     { title: t.footer.directions, links: CATEGORY_LINKS.map((id) => ({ to: `/search?cat=${id}`, label: CATEGORY_BY_ID[id].label })) },
     { title: t.footer.districts, links: DISTRICT_LINKS.map((id) => ({ to: `/search?d=${id}`, label: DISTRICT_BY_ID[id].label })) },
@@ -47,14 +44,6 @@ export function Footer() {
       </div>
       <div className="container">
         <div className={s.bottom}>
-          <p className={s.sourceNote}>
-            {t.footer.sources}
-            {counts && ` ${fill(t.footer.checked, { date: formatDay(counts.checkedAt) })}`} {t.footer.osmBefore}
-            <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">
-              OpenStreetMap
-            </a>
-            {t.footer.osmAfter}
-          </p>
           <span className={s.copy}>© {new Date().getFullYear()} BilimGo</span>
         </div>
       </div>

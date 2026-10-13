@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
 import { Map as MapIcon } from 'lucide-react';
+import { VerifiedBadge } from '@/components/centers/CenterBadges';
 import { CenterList } from '@/components/centers/CenterList';
 import { ActiveFilters } from '@/components/filters/ActiveFilters';
 import { FilterBar } from '@/components/filters/FilterBar';
@@ -43,7 +44,10 @@ export function SearchMobile(p: SearchViewProps) {
 
       <section className={s.mobileResults} aria-label={t.results.label}>
         <div className={s.mobileHead}>
-          <span className={s.countValue}>{p.result.status === 'success' ? countPlaces(p.result.total) : '—'}</span>
+          <span className={s.mobileCount}>
+            <span className={s.countValue}>{p.result.status === 'success' ? countPlaces(p.result.total) : '—'}</span>
+            <VerifiedBadge />
+          </span>
           <SortMenu value={p.filters.sort} onChange={(sort) => p.setFilters({ ...p.filters, sort })} />
         </div>
         {p.result.correctedQuery && (
@@ -61,7 +65,6 @@ export function SearchMobile(p: SearchViewProps) {
             skeletonCount={4}
           />
         </div>
-        <p className={s.mobileNote}>{t.data.notice}</p>
       </section>
 
       <Link to={target('/map')} className={s.viewSwitch}>

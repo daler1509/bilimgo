@@ -1,4 +1,4 @@
-import { Info } from 'lucide-react';
+import { VerifiedBadge } from '@/components/centers/CenterBadges';
 import { CenterList } from '@/components/centers/CenterList';
 import { ActiveFilters } from '@/components/filters/ActiveFilters';
 import { FilterBar } from '@/components/filters/FilterBar';
@@ -26,10 +26,7 @@ export function SearchDesktop(p: SearchViewProps) {
             <span className={s.countValue}>
               {p.result.status === 'success' ? countPlaces(p.result.total) : '—'}
             </span>
-            <span className={s.countHint} title={t.data.notice}>
-              <Info size={11} style={{ verticalAlign: -1, marginRight: 4 }} aria-hidden="true" />
-              {t.data.short}
-            </span>
+            <VerifiedBadge />
           </div>
           <SortMenu value={p.filters.sort} onChange={(sort) => p.setFilters({ ...p.filters, sort })} />
         </div>

@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { List } from 'lucide-react';
+import { VerifiedBadge } from '@/components/centers/CenterBadges';
 import { CenterPreviewCard } from '@/components/centers/CenterPreviewCard';
 import { FilterBar } from '@/components/filters/FilterBar';
 import { useNavTarget } from '@/components/layout/navItems';
@@ -113,7 +114,7 @@ export function MapPage() {
             <span className={s.statusDot} aria-hidden="true" />
             <span>{total === null ? '—' : countPlaces(total)}</span>
             {activeCategory && <span className={s.statusPart}>{CATEGORY_BY_ID[activeCategory].label}</span>}
-            <span className={s.statusHint}>{t.data.short}</span>
+            <VerifiedBadge className={s.statusBadge} />
           </div>
         ) : !selected ? (
           <Link to={target('/search')} className={s.viewSwitch}>

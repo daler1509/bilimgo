@@ -1,6 +1,6 @@
 import { useEffect, useId, useMemo, useRef, useState, type ChangeEvent, type ReactNode } from 'react';
 import { Link, useBlocker, useNavigate, useParams, useSearchParams } from 'react-router';
-import { ArrowLeft, ExternalLink, ImagePlus, Plus, Save, Trash2, Upload, X } from 'lucide-react';
+import { ArrowLeft, ExternalLink, ImagePlus, Plus, Save, Trash2, Upload, UserRound, X } from 'lucide-react';
 import { CenterLogo } from '@/components/centers/CenterLogo';
 import { MapView } from '@/components/map/MapView';
 import type { MapViewHandle } from '@/components/map/types';
@@ -587,6 +587,15 @@ export function AdminCenterEditor() {
           error={err('audienceNote')}
           hint="Например: школьники 5–11 классов"
         />
+        <Text
+          name="lessons"
+          label={`Как проходят занятия, ${TEXT_LANG_NAME[textLang]}`}
+          value={draft.lessons[textLang]}
+          onChange={(v) => set('lessons', { ...draft.lessons, [textLang]: v })}
+          error={err('lessons')}
+          rows={5}
+          hint="Один факт на строку: сколько раз в неделю, сколько длится урок, размер группы, тест уровня. Только из источников; в переводах держите тот же порядок строк"
+        />
         <Checks
           legend="Формат"
           options={keysOf(FORMAT_LABEL).map((f) => ({ value: f, label: FORMAT_LABEL[f] }))}
@@ -668,6 +677,84 @@ export function AdminCenterEditor() {
           <FileButton accept="image/png,image/jpeg,image/webp" multiple disabled={busy === 'upload'} icon={<ImagePlus size={18} />} onChange={(e) => upload('photos', e)}>
             Добавить фото
           </FileButton>
+        </div>
+      </Section>
+
+      <Section
+        title="Преподаватели"
+        lead="Только те, кого центр сам называет на сайте или в канале. Фото человека — с его согласия или из официальных страниц центра. Без добавленных преподавателей на сайте показывается пустой раздел."
+      >
+        <div className={s.teachers}>
+          {draft.teachers.map((x, i) => {
+            const patch = (next: Partial<typeof x>) => set('teachers', draft.teachers.map((y, j) => (j === i ? { ...y, ...next } : y)));
+            const patchPhoto = (k: 'credit' | 'sourceUrl', v: string) => x.photo && patch({ photo: { ...x.photo, [k]: v } });
+            const uploadFace = async (e: ChangeEvent<HTMLInputElement>) => {
+              const file = e.target.files?.[0];
+              e.target.value = '';
+              if (!file) return;
+              setBusy('upload');
+              try {
+                const { url, width, height } = await uploadImage('teachers', draft.id, file);
+                patch({ photo: { src: url, width, height, credit: x.photo?.credit ?? '', sourceUrl: x.photo?.sourceUrl ?? '' } });
+                toast('Фото загружено — укажите, чьё оно и откуда');
+              } catch (err2) {
+                toast(`Не удалось загрузить: ${errorText(err2)}`);
+              } finally {
+                setBusy(null);
+              }
+            };
+            return (
+              <div key={i} className={s.teacher}>
+                <div className={s.teacherFace}>
+                  {x.photo ? <img src={x.photo.src} alt="" width={x.photo.width} height={x.photo.height} /> : <UserRound size={28} aria-hidden="true" />}
+                </div>
+                <div className={s.teacherFields}>
+                  <Text name={`teachers.${i}.name`} label={`Преподаватель ${i + 1}: имя`} value={x.name} error={err(`teachers.${i}.name`)} onChange={(v) => patch({ name: v })} />
+                  <Text
+                    name={`teachers.${i}.role`}
+                    label={`Что преподаёт, ${TEXT_LANG_NAME[textLang]}`}
+                    value={x.role[textLang]}
+                    error={err(`teachers.${i}.role`)}
+                    placeholder="Преподаватель английского"
+                    onChange={(v) => patch({ role: { ...x.role, [textLang]: v } as LangText })}
+                  />
+                  <Text
+                    name={`teachers.${i}.note`}
+                    label={`Строка о преподавателе, ${TEXT_LANG_NAME[textLang]}`}
+                    value={x.note[textLang]}
+                    error={err(`teachers.${i}.note`)}
+                    hint="Только из источников: уровень, экзамены, языки"
+                    onChange={(v) => patch({ note: { ...x.note, [textLang]: v } as LangText })}
+                  />
+                  <div className={s.teacherPhoto}>
+                    <FileButton accept="image/png,image/jpeg,image/webp" disabled={busy === 'upload'} icon={<ImagePlus size={18} />} onChange={uploadFace}>
+                      {x.photo ? 'Заменить фото' : 'Загрузить фото'}
+                    </FileButton>
+                    {x.photo && (
+                      <Button variant="ghost" size="sm" leading={<X size={16} />} onClick={() => patch({ photo: null })}>
+                        Убрать фото
+                      </Button>
+                    )}
+                  </div>
+                  {x.photo && (
+                    <div className={s.grid}>
+                      <Text name={`teachers.${i}.credit`} label="Чьё фото" value={x.photo.credit} error={err(`teachers.${i}.credit`)} placeholder="Центр, автор" onChange={(v) => patchPhoto('credit', v)} />
+                      <Text
+                        name={`teachers.${i}.sourceUrl`}
+                        label="Откуда фото"
+                        value={x.photo.sourceUrl}
+                        error={err(`teachers.${i}.sourceUrl`)}
+                        placeholder="https://"
+                        onChange={(v) => patchPhoto('sourceUrl', v)}
+                      />
+                    </div>
+                  )}
+                </div>
+                <RemoveButton label={`Убрать преподавателя ${i + 1}`} onClick={() => set('teachers', draft.teachers.filter((_, j) => j !== i))} />
+              </div>
+            );
+          })}
+          <AddButton onClick={() => set('teachers', [...draft.teachers, { name: '', role: emptyLang(), note: emptyLang(), photo: null }])}>Добавить преподавателя</AddButton>
         </div>
       </Section>
 

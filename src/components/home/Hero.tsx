@@ -4,8 +4,7 @@ import { RevealText } from '@/components/motion/RevealText';
 import { RollingNumber } from '@/components/motion/RollingNumber';
 import { SearchBar } from '@/components/search/SearchBar';
 import { draftToFilters, emptyDraft, type SearchDraft } from '@/components/search/searchDraft';
-import { fill, t } from '@/i18n';
-import { formatDay } from '@/lib/dates';
+import { t } from '@/i18n';
 import { EMPTY_FILTERS, filtersToQueryString } from '@/state/searchState';
 import { useAvailability, useSupportedIntents } from '@/state/useCenterSearch';
 import s from './Hero.module.css';
@@ -53,10 +52,7 @@ export function Hero() {
               })()
             : t.home.heroFallback}
         </RevealText>
-        <p className={s.lead}>
-          {t.home.heroLead}
-          {counts && ` ${fill(t.home.heroChecked, { date: formatDay(counts.checkedAt) })}`}
-        </p>
+        <p className={s.lead}>{t.home.heroLead}</p>
 
         <div className={s.searchWrap}>
           <SearchBar draft={draft} onChange={setDraft} onSubmit={() => go(draft)} id="hero-search" />

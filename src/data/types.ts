@@ -116,6 +116,33 @@ export interface CenterPhoto extends Omit<CenterPhotoRecord, 'alt'> {
   alt: string;
 }
 
+/**
+ * A teacher's portrait: from the centre's own page or channel, with the owner
+ * named. Publish a person's photo only with their consent or from the centre.
+ */
+export interface TeacherPhotoRecord {
+  src: string;
+  width: number;
+  height: number;
+  credit: string;
+  sourceUrl: string;
+}
+
+/** A teacher as the centre presents them. Only what a source says — nothing is made up. */
+export interface TeacherRecord {
+  name: string;
+  /** What they teach or do: «Преподаватель английского» */
+  role?: LocalText;
+  /** One more line from the source: level, exams, languages */
+  note?: LocalText;
+  photo?: TeacherPhotoRecord;
+}
+
+export interface Teacher extends Omit<TeacherRecord, 'role' | 'note'> {
+  role?: string;
+  note?: string;
+}
+
 /** One physical place, as stored in the data file */
 export interface CenterRecord {
   id: string;
@@ -144,6 +171,8 @@ export interface CenterRecord {
   programs?: ProgramRecord[];
   ages?: AgeGroup[];
   audienceNote?: LocalText;
+  /** How classes go, one short fact per item: frequency, duration, group size, level test… Only what the centre itself says. */
+  lessons?: LocalText[];
   formats?: LearningFormat[];
   teaching?: TeachingLanguage[];
   features?: CenterFeature[];
@@ -154,6 +183,8 @@ export interface CenterRecord {
   /** Rating as published by a named source — never computed here */
   rating?: { value: number; count: number; source: SourceRef };
   photos?: CenterPhotoRecord[];
+  /** The teaching staff, when the centre publishes it. Absent = not published. */
+  teachers?: TeacherRecord[];
   /** Organisation card on Yandex Maps — base facts come from there */
   yandexId: string;
   /** Ratings on that card when the data was checked. Orders «По популярности»; never displayed. */
@@ -163,13 +194,15 @@ export interface CenterRecord {
 }
 
 /** A record as the site shows it: texts already in the current language */
-export interface Center extends Omit<CenterRecord, 'address' | 'summary' | 'about' | 'programs' | 'audienceNote' | 'photos'> {
+export interface Center extends Omit<CenterRecord, 'address' | 'summary' | 'about' | 'programs' | 'audienceNote' | 'lessons' | 'photos' | 'teachers'> {
   address?: string;
   summary?: string;
   about?: string[];
   programs?: Program[];
   audienceNote?: string;
+  lessons?: string[];
   photos?: CenterPhoto[];
+  teachers?: Teacher[];
   districtId: DistrictId;
   /** Rated often on Yandex Maps: «Популярно» (see POPULAR_MIN_RATINGS) */
   popular?: boolean;

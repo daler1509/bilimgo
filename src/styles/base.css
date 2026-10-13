@@ -222,6 +222,53 @@ ol {
   }
 }
 
+/* Blocks of a long page arrive as they are scrolled into view (see useReveal):
+   the block rises and fades in once; children marked data-stagger follow one by one */
+[data-reveal] {
+  transition:
+    opacity var(--duration-slower) var(--ease-standard),
+    translate var(--duration-reveal) var(--ease-out);
+}
+
+[data-reveal]:not([data-shown]) {
+  opacity: 0;
+  translate: 0 28px;
+}
+
+[data-reveal] [data-stagger] {
+  transition:
+    opacity var(--duration-slower) var(--ease-standard) calc(var(--i, 0) * 80ms + 140ms),
+    translate var(--duration-reveal) var(--ease-out) calc(var(--i, 0) * 80ms + 140ms);
+}
+
+[data-reveal]:not([data-shown]) [data-stagger] {
+  opacity: 0;
+  translate: 0 22px;
+}
+
+/* Switching the theme: colours cross-fade instead of snapping (class lives ~0.4 s) */
+html.theme-fade,
+html.theme-fade *,
+html.theme-fade *::before,
+html.theme-fade *::after {
+  transition:
+    background-color 300ms var(--ease-standard),
+    border-color 300ms var(--ease-standard),
+    color 300ms var(--ease-standard),
+    fill 300ms var(--ease-standard),
+    stroke 300ms var(--ease-standard),
+    box-shadow 300ms var(--ease-standard) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.theme-fade,
+  html.theme-fade *,
+  html.theme-fade *::before,
+  html.theme-fade *::after {
+    transition: none !important;
+  }
+}
+
 /* Place glyph in district option lists (filters, search) */
 .facet-place {
   display: inline-grid;

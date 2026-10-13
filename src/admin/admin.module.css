@@ -544,6 +544,54 @@ input:focus-visible + .fileButton {
   object-fit: cover;
 }
 
+.teachers {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.teacher {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 12px;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+}
+
+.teacherFace {
+  display: grid;
+  place-items: center;
+  width: 72px;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: 50% 50% 6px 6px / 40% 40% 6px 6px;
+  background: var(--color-bg-muted);
+  color: var(--color-text-tertiary);
+}
+
+.teacherFace img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 18%;
+}
+
+.teacherFields {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.teacherPhoto {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
 .mapBox {
   position: relative;
   height: 260px;
