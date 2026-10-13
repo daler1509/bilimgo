@@ -80,16 +80,13 @@
 }
 
 /* parts of the line are set apart by a hairline, not by punctuation */
-.statusPart,
-.statusHint {
+.statusPart {
   padding-left: 10px;
   border-left: 1px solid var(--color-border);
 }
 
-.statusHint {
-  color: var(--color-text-tertiary);
-  font-weight: var(--weight-regular);
-  font-size: var(--text-caption);
+.statusBadge {
+  margin-right: -4px;
 }
 
 /* list ⇄ map: the same button in the same place as on the list */

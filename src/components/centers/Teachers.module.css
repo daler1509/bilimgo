@@ -1,0 +1,291 @@
+/* ---------------- the belt of portraits ---------------- */
+.root {
+  --card-w: 232px;
+  --gap: 20px;
+  position: relative;
+}
+
+.viewport {
+  overflow-x: auto;
+  scrollbar-width: none;
+  /* the lowered portraits of the arcade need room under the row */
+  padding-bottom: 28px;
+  border-radius: var(--radius-sm);
+}
+
+.viewport::-webkit-scrollbar {
+  display: none;
+}
+
+.belt {
+  display: flex;
+  width: max-content;
+}
+
+.list {
+  display: flex;
+  flex: none;
+}
+
+/* the gap is a margin of every portrait, so two sets join without a seam */
+.item {
+  flex: 0 0 var(--card-w);
+  margin-right: var(--gap);
+}
+
+/* running: one endless belt, the second set is the same row once more */
+.root[data-loop] .viewport {
+  overflow: hidden;
+  mask-image: linear-gradient(to right, transparent 0, #000 28px, #000 calc(100% - 28px), transparent 100%);
+}
+
+.root[data-loop] .belt {
+  animation: belt var(--belt, 40s) linear infinite;
+}
+
+.root[data-loop][data-paused] .belt {
+  animation-play-state: paused;
+}
+
+@keyframes belt {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  /* arrival: from the right, one after another */
+  transition:
+    translate var(--duration-slower) var(--ease-out) calc(var(--i, 0) * 90ms),
+    opacity var(--duration-slow) var(--ease-standard) calc(var(--i, 0) * 90ms);
+}
+
+.root:not([data-shown]) .card {
+  translate: 56px 0;
+  opacity: 0;
+}
+
+/* an arcade: every second portrait stands a little lower */
+@media (min-width: 600px) {
+  .item:nth-child(even) .card {
+    transform: translateY(24px);
+  }
+}
+
+/* stop button: out of the way, there for keyboards (hovering or holding stops the belt too) */
+.pause {
+  position: absolute;
+  right: 0;
+  bottom: -2px;
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-pill);
+  box-shadow: inset 0 0 0 1px var(--color-border-strong);
+  background: var(--color-bg);
+  color: var(--color-text-secondary);
+  opacity: 0;
+  transition: opacity var(--duration-base) var(--ease-standard);
+}
+
+.root:hover .pause,
+.pause:focus-visible {
+  opacity: 1;
+}
+
+.pause:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+@media (hover: none) {
+  .pause {
+    opacity: 1;
+  }
+}
+
+/* ---------------- the arched frame ---------------- */
+.frame {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: 50% 50% var(--radius-sm) var(--radius-sm) / 40% 40% var(--radius-sm) var(--radius-sm);
+  background: var(--color-plate);
+  color: var(--color-border-strong);
+}
+
+/* tile pattern behind an empty window */
+.frame::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: var(--pattern-girih);
+  background-size: 48px 48px;
+  background-position: center;
+  opacity: 0.55;
+  /* the tiles thin out toward the shoulders, so the figure reads on its own */
+  mask-image: linear-gradient(to bottom, #000 35%, transparent 92%);
+}
+
+/* the inner contour of the arch, like a stone frame around the opening */
+.frame::after {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border-radius: 50% 50% 4px 4px / 40% 40% 4px 4px;
+  box-shadow: inset 0 0 0 1px var(--color-accent);
+  opacity: 0.55;
+  transition: opacity var(--duration-base) var(--ease-standard), inset var(--duration-slow) var(--ease-out);
+  pointer-events: none;
+}
+
+.photo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 18%;
+  transition: transform var(--duration-slower) var(--ease-out);
+}
+
+.bust {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 78%;
+  translate: -50% 0;
+  fill: color-mix(in srgb, var(--color-border-strong) 70%, var(--color-plate));
+}
+
+.card:hover .photo {
+  transform: scale(1.04);
+}
+
+.card:hover .frame::after {
+  inset: 9px;
+  opacity: 1;
+}
+
+/* ---------------- name under the portrait ---------------- */
+.caption {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding-inline: 2px;
+}
+
+.name {
+  font-family: var(--font-display);
+  font-size: var(--text-body);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--leading-snug);
+  overflow-wrap: anywhere;
+}
+
+.role {
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-sm);
+  line-height: 1.35;
+}
+
+.note {
+  color: var(--color-text-tertiary);
+  font-size: var(--text-caption);
+  line-height: 1.4;
+}
+
+.credit {
+  margin-top: 8px;
+  color: var(--color-text-tertiary);
+  font-size: var(--text-caption);
+}
+
+.credit a {
+  color: var(--color-text-secondary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ---------------- nobody published yet ---------------- */
+.empty {
+  display: flex;
+  align-items: center;
+  gap: 20px 28px;
+}
+
+.ghosts {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.ghost {
+  position: relative;
+  display: block;
+  width: 58px;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: 50% 50% 6px 6px / 40% 40% 6px 6px;
+  background: var(--color-plate);
+  color: var(--color-border-strong);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+}
+
+.ghost:nth-child(2) {
+  width: 66px;
+  margin-bottom: 14px;
+}
+
+.emptyText {
+  max-width: 46ch;
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-sm);
+  line-height: 1.5;
+}
+
+/* ---------------- phones ---------------- */
+@media (max-width: 599px) {
+  .root {
+    --card-w: 148px;
+    --gap: 14px;
+  }
+
+  /* the belt runs to the screen edges */
+  .viewport {
+    margin-inline: calc(var(--gutter) * -1);
+    padding-inline: var(--gutter);
+    border-radius: 0;
+  }
+
+  .root[data-loop] .viewport {
+    padding-inline: 0;
+  }
+
+  .empty {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .photo,
+  .frame::after,
+  .card,
+  .pause {
+    transition: none;
+  }
+
+  .root:not([data-shown]) .card {
+    translate: none;
+    opacity: 1;
+  }
+}

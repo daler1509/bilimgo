@@ -10,6 +10,7 @@ import type {
   LngLat,
   LocalText,
   Locale,
+  TeacherPhotoRecord,
   TeachingLanguage,
 } from '@/data/types';
 import { parseOpeningHours } from '@/lib/openingHours';
@@ -47,6 +48,14 @@ const filled = (v: LangText) => TEXT_LOCALES.some((l) => v[l].trim());
 /** Photo as edited: caption in three languages */
 export type DraftPhoto = Omit<CenterPhotoRecord, 'alt'> & { alt: LangText };
 
+/** Teacher as edited: role and note in three languages, portrait with its owner */
+export interface DraftTeacher {
+  name: string;
+  role: LangText;
+  note: LangText;
+  photo: TeacherPhotoRecord | null;
+}
+
 export type PricePer = 'month' | 'course' | 'lesson';
 
 export interface Draft {
@@ -74,6 +83,8 @@ export interface Draft {
   programs: { title: LangText; note: LangText }[];
   ages: AgeGroup[];
   audienceNote: LangText;
+  /** Facts about the lessons, one per line, per language */
+  lessons: LangText;
   formats: LearningFormat[];
   teaching: TeachingLanguage[];
   features: CenterFeature[];
@@ -81,6 +92,7 @@ export interface Draft {
   price: { amount: string; per: PricePer; label: string; url: string } | null;
   rating: { value: string; count: string; label: string; url: string } | null;
   photos: DraftPhoto[];
+  teachers: DraftTeacher[];
   yandexId: string;
   /** Ratings on the Yandex Maps card — orders «По популярности» */
   yandexRatings: string;
@@ -111,6 +123,7 @@ export const emptyDraft = (): Draft => ({
   programs: [],
   ages: [],
   audienceNote: emptyLang(),
+  lessons: emptyLang(),
   formats: [],
   teaching: [],
   features: [],
@@ -118,6 +131,7 @@ export const emptyDraft = (): Draft => ({
   price: null,
   rating: null,
   photos: [],
+  teachers: [],
   yandexId: '',
   yandexRatings: '',
   sources: [],
@@ -146,6 +160,7 @@ export function draftFromRecord(r: CenterRecord, published: boolean): Draft {
     programs: (r.programs ?? []).map((p) => ({ title: langOf(p.title), note: langOf(p.note) })),
     ages: r.ages ?? [],
     audienceNote: langOf(r.audienceNote),
+    lessons: Object.fromEntries(TEXT_LOCALES.map((l) => [l, (r.lessons ?? []).map((p) => p[l] ?? '').filter(Boolean).join('\n')])) as LangText,
     formats: r.formats ?? [],
     teaching: r.teaching ?? [],
     features: r.features ?? [],
@@ -157,6 +172,7 @@ export function draftFromRecord(r: CenterRecord, published: boolean): Draft {
       ? { value: String(r.rating.value), count: String(r.rating.count), label: r.rating.source.label, url: r.rating.source.url }
       : null,
     photos: (r.photos ?? []).map((p) => ({ ...p, alt: langOf(p.alt) })),
+    teachers: (r.teachers ?? []).map((x) => ({ name: x.name, role: langOf(x.role), note: langOf(x.note), photo: x.photo ?? null })),
     yandexId: r.yandexId,
     yandexRatings: r.yandexRatingCount != null ? String(r.yandexRatingCount) : '',
     sources: r.sources.map((s) => ({ ...s })),
@@ -292,7 +308,7 @@ export function toRecord(d: Draft, isNew: boolean): { record: CenterRecord | nul
   programs.forEach((p, i) => {
     if (!p.title.ru.trim()) e[`programs.${i}.title`] = 'Нужно название на русском';
   });
-  for (const [key, value] of [['summary', d.summary], ['audienceNote', d.audienceNote], ['about', d.about]] as const) {
+  for (const [key, value] of [['summary', d.summary], ['audienceNote', d.audienceNote], ['about', d.about], ['lessons', d.lessons]] as const) {
     if (filled(value) && !value.ru.trim()) e[key] = 'Нужен текст на русском: остальные языки без него не покажутся';
   }
 
@@ -329,6 +345,17 @@ export function toRecord(d: Draft, isNew: boolean): { record: CenterRecord | nul
     if (!isHttpUrl(p.sourceUrl.trim())) e[`photos.${i}.sourceUrl`] = 'Откуда фото';
   });
 
+  d.teachers.forEach((x, i) => {
+    need(`teachers.${i}.name`, x.name, 'Имя преподавателя');
+    for (const [key, value] of [['role', x.role], ['note', x.note]] as const) {
+      if (filled(value) && !value.ru.trim()) e[`teachers.${i}.${key}`] = 'Нужен текст на русском: остальные языки без него не покажутся';
+    }
+    if (x.photo) {
+      need(`teachers.${i}.credit`, x.photo.credit, 'Чьё фото — центр или автор');
+      if (!isHttpUrl(x.photo.sourceUrl.trim())) e[`teachers.${i}.sourceUrl`] = 'Откуда фото: страница или канал центра';
+    }
+  });
+
   if (Object.keys(e).length || !location) return { record: null, errors: e };
 
   const selected = withParents(d.categories);
@@ -344,6 +371,13 @@ export function toRecord(d: Draft, isNew: boolean): { record: CenterRecord | nul
       .filter(Boolean);
   const byLang = Object.fromEntries(TEXT_LOCALES.map((l) => [l, split(d.about[l])])) as Record<Locale, string[]>;
   const paragraphs = byLang.ru.map((ru, i) => toLocal({ ru, uz: byLang.uz[i] ?? '', en: byLang.en[i] ?? '' })!);
+  const lines = (v: string) =>
+    v
+      .split('\n')
+      .map((p) => p.trim())
+      .filter(Boolean);
+  const factsByLang = Object.fromEntries(TEXT_LOCALES.map((l) => [l, lines(d.lessons[l])])) as Record<Locale, string[]>;
+  const lessons = factsByLang.ru.map((ru, i) => toLocal({ ru, uz: factsByLang.uz[i] ?? '', en: factsByLang.en[i] ?? '' })!);
   const opt = (v: string) => v.trim() || undefined;
   const list = <T,>(v: T[]) => (v.length ? v : undefined);
 
@@ -372,6 +406,7 @@ export function toRecord(d: Draft, isNew: boolean): { record: CenterRecord | nul
     ),
     ages: list(d.ages),
     audienceNote: toLocal(d.audienceNote),
+    lessons: list(lessons),
     formats: list(d.formats),
     teaching: list(d.teaching),
     features: list(d.features),
@@ -379,6 +414,18 @@ export function toRecord(d: Draft, isNew: boolean): { record: CenterRecord | nul
     priceFrom,
     rating,
     photos: list(d.photos.map((p) => ({ ...p, alt: toLocal(p.alt)!, credit: p.credit.trim(), license: p.license.trim(), sourceUrl: p.sourceUrl.trim() }))),
+    teachers: list(
+      d.teachers.map((x) => {
+        const role = toLocal(x.role);
+        const note = toLocal(x.note);
+        return {
+          name: x.name.trim(),
+          ...(role && { role }),
+          ...(note && { note }),
+          ...(x.photo && { photo: { ...x.photo, credit: x.photo.credit.trim(), sourceUrl: x.photo.sourceUrl.trim() } }),
+        };
+      }),
+    ),
     yandexId,
     yandexRatingCount,
     sources,

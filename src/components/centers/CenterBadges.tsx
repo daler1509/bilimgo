@@ -1,4 +1,4 @@
-import { Award, Building2, Flame } from 'lucide-react';
+import { Award, BadgeCheck, Building2, Flame } from 'lucide-react';
 import type { Center } from '@/data/types';
 import { t } from '@/i18n';
 import { cn } from '@/lib/cn';
@@ -25,6 +25,16 @@ export function PlaceBadges({ center, className, row }: { center: Pick<Center, '
           {t.badges.popular}
         </span>
       )}
+    </span>
+  );
+}
+
+/** «Проверенные центры»: the catalogue lists only places whose details were checked against their sources */
+export function VerifiedBadge({ className }: { className?: string }) {
+  return (
+    <span className={cn(s.badge, s.verified, className)} title={t.data.notice}>
+      <BadgeCheck size={14} strokeWidth={2.2} aria-hidden="true" />
+      {t.data.short}
     </span>
   );
 }

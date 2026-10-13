@@ -60,6 +60,7 @@ create table if not exists public.centers (
   programs      jsonb,  -- [{"title": {"ru", …}, "note": {"ru", …}}]
   ages          text[],
   audience_note jsonb,
+  lessons       jsonb,  -- как проходят занятия: массив коротких фактов, каждый {"ru", "uz", "en"}
   formats       text[],
   teaching      text[],
   features      text[],
@@ -68,6 +69,8 @@ create table if not exists public.centers (
   price_from    jsonb check (price_from is null or (price_from ? 'amount' and price_from -> 'source' ? 'url')),
   rating        jsonb check (rating is null or (rating ? 'value' and rating -> 'source' ? 'url')),
   photos        jsonb,
+  -- преподаватели, как их называет сам центр: [{"name", "role": {"ru", …}, "note": {…}, "photo": {"src", "width", "height", "credit", "sourceUrl"}}]
+  teachers      jsonb,
   yandex_id     text not null check (length(btrim(yandex_id)) > 0),
   -- оценок на карточке Яндекс Карт; порядок «По популярности», на сайте не показывается
   yandex_rating_count integer check (yandex_rating_count is null or yandex_rating_count >= 0),
@@ -79,6 +82,12 @@ create table if not exists public.centers (
 
 -- для баз, созданных до появления сортировки «По популярности»
 alter table public.centers add column if not exists yandex_rating_count integer;
+
+-- для баз, созданных до раздела «Преподаватели»
+alter table public.centers add column if not exists teachers jsonb;
+
+-- для баз, созданных до блока «Как проходят занятия»
+alter table public.centers add column if not exists lessons jsonb;
 
 -- для баз, созданных до перевода на узбекский и английский: тексты были строками.
 -- Старое значение становится JSON-строкой, сайт читает его как русский текст.

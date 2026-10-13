@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Check } from 'lucide-react';
 import { cn } from '@/lib/cn';
 import s from './OptionRow.module.css';
@@ -19,12 +19,26 @@ interface Props {
 
 /** One selectable line — shared by search panels, filters and sort menus. */
 export function OptionRow({ label, hint, count, selected, onSelect, glyph, multi = true, nested, className }: Props) {
+  // the pop and the ring play when the row is chosen, not when a list opens with it already on
+  const [chosen, setChosen] = useState(false);
+  const was = useRef(selected);
+  useEffect(() => {
+    if (selected && !was.current) {
+      setChosen(true);
+      const id = window.setTimeout(() => setChosen(false), 560);
+      was.current = selected;
+      return () => window.clearTimeout(id);
+    }
+    was.current = selected;
+    setChosen(false);
+  }, [selected]);
+
   return (
     <button
       type="button"
       role={multi ? 'checkbox' : 'radio'}
       aria-checked={selected}
-      className={cn(s.row, selected && s.selected, nested && s.nested, className)}
+      className={cn(s.row, selected && s.selected, chosen && s.chosen, nested && s.nested, className)}
       onClick={onSelect}
     >
       {glyph}

@@ -48,11 +48,6 @@
   font-variant-numeric: tabular-nums;
 }
 
-.countHint {
-  color: var(--color-text-tertiary);
-  font-size: var(--text-micro);
-}
-
 .tagsRow {
   padding: 0 20px 10px;
 }
@@ -102,17 +97,18 @@
   margin-bottom: 8px;
 }
 
+.mobileCount {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  min-width: 0;
+}
+
 .mobileList {
   margin-top: 8px;
 }
 
-.mobileNote {
-  max-width: 60ch;
-  margin-top: 20px;
-  color: var(--color-text-tertiary);
-  font-size: var(--text-caption);
-  line-height: 1.5;
-}
 
 /* list ⇄ map: the same pill in the same place on both screens */
 .viewSwitch {

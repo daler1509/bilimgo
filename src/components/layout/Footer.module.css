@@ -84,17 +84,6 @@
   font-size: var(--text-micro);
 }
 
-.sourceNote {
-  max-width: 78ch;
-  line-height: 1.5;
-}
-
-.sourceNote a {
-  color: var(--color-text-secondary);
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-
 .copy {
   white-space: nowrap;
 }

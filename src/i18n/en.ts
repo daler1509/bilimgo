@@ -30,9 +30,8 @@ export const en: Dict = {
     languages: { ru: 'Русский', uz: 'Oʻzbekcha', en: 'English' },
   },
   data: {
-    short: 'Verified',
-    notice:
-      'Addresses, phone numbers and opening hours come from organisation listings on Yandex Maps; subjects and descriptions from the centres’ official websites and channels. Details can change, so check with the centre.',
+    short: 'Verified centres',
+    notice: 'The details of these centres have been checked. They can change, so confirm with the centre.',
   },
   search: {
     what: 'What to learn',
@@ -136,6 +135,10 @@ export const en: Dict = {
     audience: 'Who it’s for',
     agesKnown: 'Groups for',
     audienceTitle: 'Who it’s for and how classes run',
+    lessons: 'How classes run',
+    teachers: 'Teachers',
+    teachersEmpty: 'The list of teachers is empty for now. It will appear here once the centre publishes its team.',
+    teachersPhoto: 'Photo',
     audienceUnknown: 'The centre doesn’t publish student ages, class format or teaching language. Ask when you sign up.',
     formats: 'Class format',
     teaching: 'Teaching language',
@@ -155,7 +158,6 @@ export const en: Dict = {
     noAbout: 'The centre hasn’t published a detailed description yet. Ask about courses by phone or on social media.',
     noContacts: 'No contacts published. Address and directions below.',
     sourcesLabel: 'Sources',
-    checked: 'Verified',
     verifyNote: 'Check the schedule with the centre before you visit.',
     onYandex: 'Listing on Yandex Maps',
     notFound: 'This place doesn’t exist',
@@ -226,7 +228,6 @@ export const en: Dict = {
     ],
     heroFallback: 'Learning centres in Samarkand',
     heroLead: 'English and IELTS, programming, maths, DTM and SAT preparation.',
-    heroChecked: 'Addresses, opening hours and phone numbers verified on {date}.',
     popular: 'Popular centres',
     allPlaces: 'All {places}',
     catalogStrip: 'Every centre in the catalogue',
@@ -270,11 +271,6 @@ export const en: Dict = {
     directions: 'Subjects',
     districts: 'Areas',
     addCenter: 'Add a learning centre',
-    sources:
-      'Addresses, phone numbers and opening hours come from organisation listings on Yandex Maps; subjects and courses from the centres’ official websites and Telegram channels.',
-    checked: 'Data verified on {date}.',
-    osmBefore: 'Map © ',
-    osmAfter: ' contributors.',
   },
   addCenter: {
     title: 'Add a learning centre',

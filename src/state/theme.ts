@@ -46,7 +46,11 @@ export function setTheme(next: Theme) {
   } catch {
     /* kept for this visit only */
   }
+  // colours cross-fade for a moment; the first paint and system changes stay instant
+  const root = document.documentElement;
+  root.classList.add('theme-fade');
   apply();
+  window.setTimeout(() => root.classList.remove('theme-fade'), 380);
   listeners.forEach((fn) => fn());
 }
 

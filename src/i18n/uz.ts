@@ -33,9 +33,8 @@ export const uz: Dict = {
     languages: { ru: 'Русский', uz: 'Oʻzbekcha', en: 'English' },
   },
   data: {
-    short: 'Tekshirilgan',
-    notice:
-      'Manzillar, telefonlar va ish vaqti Yandex Xaritalardagi tashkilot kartochkalaridan, yoʻnalishlar va tavsiflar markazlarning rasmiy saytlari va kanallaridan olingan. Maʼlumotlar eskirishi mumkin, markazdan aniqlashtiring.',
+    short: 'Tekshirilgan markazlar',
+    notice: 'Markazlar maʼlumotlari tekshirilgan. Ular oʻzgarishi mumkin, shuning uchun markazdan aniqlashtiring.',
   },
   search: {
     what: 'Nimani oʻrganish',
@@ -139,6 +138,10 @@ export const uz: Dict = {
     audience: 'Kim uchun',
     agesKnown: 'Guruhlar bor',
     audienceTitle: 'Kim uchun va darslar qanday oʻtadi',
+    lessons: 'Darslar qanday oʻtadi',
+    teachers: 'Oʻqituvchilar',
+    teachersEmpty: 'Oʻqituvchilar roʻyxati hozircha boʻsh. Markaz tarkibni eʼlon qilgach, u shu yerda paydo boʻladi.',
+    teachersPhoto: 'Surat',
     audienceUnknown: 'Markaz oʻquvchilar yoshi, darslar formati va tilini eʼlon qilmaydi. Yozilishda aniqlashtiring.',
     formats: 'Darslar formati',
     teaching: 'Oʻqitish tili',
@@ -158,7 +161,6 @@ export const uz: Dict = {
     noAbout: 'Markaz hali batafsil tavsif eʼlon qilmagan. Dasturlarni telefon yoki ijtimoiy tarmoqlar orqali aniqlashtirish mumkin.',
     noContacts: 'Kontaktlar eʼlon qilinmagan. Manzil va marshrut quyida.',
     sourcesLabel: 'Manbalar',
-    checked: 'Tekshirilgan',
     verifyNote: 'Tashrifdan oldin jadvalni markazdan aniqlashtiring.',
     onYandex: 'Yandex Xaritalardagi kartochka',
     notFound: 'Bunday joy yoʻq',
@@ -224,7 +226,6 @@ export const uz: Dict = {
     heroTitle: (total: number, areas: number) => ['Samarqandning', { n: areas }, 'ta hududida', { n: total }, 'ta oʻquv markazi'],
     heroFallback: 'Samarqanddagi oʻquv markazlari',
     heroLead: 'Ingliz tili va IELTS, dasturlash, matematika, DTM va SATga tayyorgarlik.',
-    heroChecked: 'Manzillar, ish vaqti va telefonlar {date} tekshirilgan.',
     popular: 'Mashhur markazlar',
     allPlaces: 'Barcha {places}',
     catalogStrip: 'Katalogdagi barcha markazlar',
@@ -268,11 +269,6 @@ export const uz: Dict = {
     directions: 'Yoʻnalishlar',
     districts: 'Hududlar',
     addCenter: 'Oʻquv markazi qoʻshish',
-    sources:
-      'Manzillar, telefonlar va ish vaqti Yandex Xaritalardagi tashkilot kartochkalaridan, yoʻnalishlar va dasturlar markazlarning rasmiy saytlari va Telegram kanallaridan olingan.',
-    checked: 'Maʼlumotlar {date} tekshirilgan.',
-    osmBefore: 'Xarita © ',
-    osmAfter: ' ishtirokchilari.',
   },
   addCenter: {
     title: 'Oʻquv markazini qoʻshish',

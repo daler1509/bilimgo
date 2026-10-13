@@ -99,6 +99,22 @@
   font-size: var(--text-caption);
 }
 
+@keyframes tag-in {
+  from {
+    opacity: 0;
+    transform: scale(0.88);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* a filter just applied settles into the row */
+.tag {
+  animation: tag-in var(--duration-base) var(--ease-spring) both;
+}
+
 .tag:hover:not(:disabled) {
   background: var(--color-surface-pressed);
   border-color: transparent;

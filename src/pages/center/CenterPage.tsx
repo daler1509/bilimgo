@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useState, type CSSProperties, type ReactNode } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router';
 import { ArrowLeft, ArrowUpRight, AtSign, ChevronRight, Clock3, Globe, Map as MapIcon, MapPin, Navigation, Phone, Send, Share2, Tag } from 'lucide-react';
 import { CategoryGlyph } from '@/components/centers/CategoryGlyph';
@@ -25,6 +25,7 @@ import { CompareButton } from '@/components/centers/CompareButton';
 import { FavoriteButton } from '@/components/centers/FavoriteButton';
 import { Gallery } from '@/components/centers/Gallery';
 import { LeadDialog } from '@/components/centers/LeadDialog';
+import { Teachers } from '@/components/centers/Teachers';
 import { Footer } from '@/components/layout/Footer';
 import { MapView } from '@/components/map/MapView';
 import { centersToMarkers } from '@/components/map/markerData';
@@ -35,11 +36,11 @@ import { StateMessage } from '@/components/ui/StateMessage';
 import { CATEGORY_BY_ID } from '@/data/categories';
 import type { Center } from '@/data/types';
 import { AGE_HINT, AGE_LABEL, fill, FORMAT_LABEL, LANGUAGE_LABEL, t } from '@/i18n';
-import { formatDay } from '@/lib/dates';
 import { distanceKm, formatDistance } from '@/lib/geo';
 import { hoursRows } from '@/lib/openingHours';
 import { centersRepository } from '@/services/centersRepository';
 import { EMPTY_FILTERS } from '@/state/searchState';
+import { useReveal } from '@/hooks/useReveal';
 import { useCenterSearch } from '@/state/useCenterSearch';
 import { useUi } from '@/state/ui';
 import s from './center.module.css';
@@ -76,14 +77,30 @@ function Detail({ label, children }: { label: string; children: ReactNode }) {
 }
 
 function Section({ id, title, children }: { id: string; title: string; children: ReactNode }) {
+  const reveal = useReveal<HTMLElement>();
   return (
-    <section className={s.section} aria-labelledby={id}>
+    <section className={s.section} aria-labelledby={id} {...reveal}>
       <h2 className={s.sectionTitle} id={id}>
         {title}
       </h2>
       {children}
     </section>
   );
+}
+
+/** A block of the page that arrives when it is scrolled into view */
+function Reveal({
+  as: Tag = 'div',
+  ...props
+}: {
+  as?: 'div' | 'section';
+  className?: string;
+  children: ReactNode;
+  'aria-label'?: string;
+  'aria-labelledby'?: string;
+}) {
+  const reveal = useReveal<HTMLElement>();
+  return <Tag {...props} {...reveal} />;
 }
 
 /** The destination of «Подробнее»: everything the sources know about one place. */
@@ -144,7 +161,7 @@ export function CenterPage() {
   const courses = c.programs?.length
     ? c.programs.map((p) => ({ title: p.title, note: p.note, direction: courseDirection(p.title, primary) }))
     : cats.map((cat) => ({ title: CATEGORY_BY_ID[cat].label, note: undefined, direction: cat }));
-  const audienceKnown = !!(c.ages?.length || c.audienceNote || c.formats?.length || c.teaching?.length);
+  const audienceKnown = !!(c.ages?.length || c.audienceNote || c.formats?.length || c.teaching?.length || c.lessons?.length);
 
   // nearest places of the same direction, one per brand
   const seenBrands = new Set([c.brand ?? c.id]);
@@ -313,8 +330,8 @@ export function CenterPage() {
                 <p className={s.sectionLead}>{c.programs?.length ? t.courses.lead : `${t.courses.fromDirections} ${t.courses.lead}`}</p>
                 {/* each course is one tap away from a request about it */}
                 <ul className={s.courseGrid}>
-                  {courses.map((course) => (
-                    <li key={course.title} className={s.courseItem}>
+                  {courses.map((course, i) => (
+                    <li key={course.title} className={s.courseItem} data-stagger style={{ '--i': i } as CSSProperties}>
                       <button
                         type="button"
                         className={s.courseCard}
@@ -352,6 +369,10 @@ export function CenterPage() {
               </Section>
             )}
 
+            <Section id="teachers" title={t.center.teachers}>
+              <Teachers teachers={c.teachers} />
+            </Section>
+
             <Section id="audience" title={t.center.audienceTitle}>
               {audienceKnown ? (
                 <dl className={s.details}>
@@ -364,6 +385,15 @@ export function CenterPage() {
                   )}
                   {c.formats?.length ? <Detail label={t.center.formats}>{c.formats.map((f) => FORMAT_LABEL[f]).join(t.center.and)}</Detail> : null}
                   {c.teaching?.length ? <Detail label={t.center.teaching}>{c.teaching.map((l) => LANGUAGE_LABEL[l]).join(', ')}</Detail> : null}
+                  {c.lessons?.length ? (
+                    <Detail label={t.center.lessons}>
+                      <ul className={s.lessonList}>
+                        {c.lessons.map((fact) => (
+                          <li key={fact}>{fact}</li>
+                        ))}
+                      </ul>
+                    </Detail>
+                  ) : null}
                 </dl>
               ) : (
                 <p className={s.placeholder}>{t.center.audienceUnknown}</p>
@@ -372,7 +402,7 @@ export function CenterPage() {
           </div>
 
           <aside className={s.aside} aria-label={t.center.contactsTitle}>
-            <div className={s.contactCard}>
+            <Reveal className={s.contactCard}>
               <h2 className={s.cardTitle}>{t.center.contactsTitle}</h2>
 
               {/* photos took the hero — the map moves here */}
@@ -463,15 +493,15 @@ export function CenterPage() {
                   </ButtonLink>
                 </div>
               </div>
-            </div>
+            </Reveal>
           </aside>
 
           {branches.length > 0 && (
             <div className={s.branchesBlock}>
               <Section id="branches" title={t.center.branches}>
                 <ul className={s.branches}>
-                  {branches.map((b) => (
-                    <li key={b.id}>
+                  {branches.map((b, i) => (
+                    <li key={b.id} data-stagger style={{ '--i': i } as CSSProperties}>
                       <CenterLink id={b.id} className={s.branch}>
                         <MapPin size={16} aria-hidden="true" />
                         <span className={s.branchText}>
@@ -489,9 +519,9 @@ export function CenterPage() {
             </div>
           )}
 
-          <section className={s.sources} aria-label={t.center.sourcesLabel}>
+          <Reveal as="section" className={s.sources} aria-label={t.center.sourcesLabel}>
             <p>
-              {t.center.checked} {formatDay(center.checkedAt)}. {t.center.sourcesLabel}:{' '}
+              {t.center.sourcesLabel}:{' '}
               <a href={c.yandexUrl} {...external}>
                 {t.center.onYandex}
               </a>
@@ -505,11 +535,11 @@ export function CenterPage() {
               ))}
               . {t.center.verifyNote}
             </p>
-          </section>
+          </Reveal>
         </div>
 
         {similarItems.length > 0 && (
-          <section className={s.similar} aria-labelledby="similar-title">
+          <Reveal as="section" className={s.similar} aria-labelledby="similar-title">
             <div className={s.similarHead}>
               <h2 className={s.sectionTitle} id="similar-title">
                 {t.center.similar}
@@ -521,13 +551,13 @@ export function CenterPage() {
               )}
             </div>
             <ul className={s.similarGrid}>
-              {similarItems.map((x) => (
-                <li key={x.id}>
+              {similarItems.map((x, i) => (
+                <li key={x.id} data-stagger style={{ '--i': i } as CSSProperties}>
                   <CenterCard center={x} primaryAction="link" detailsHref={`/centers/${x.id}`} />
                 </li>
               ))}
             </ul>
-          </section>
+          </Reveal>
         )}
       </div>
       <Footer />

@@ -2,6 +2,7 @@ import { memo, useRef, useState, type MouseEvent } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { ChevronLeft, ChevronRight, Clock3, MapPin } from 'lucide-react';
 import { Button, ButtonLink } from '@/components/ui/Button';
+import { FadeImg } from '@/components/ui/FadeImg';
 import type { Center } from '@/data/types';
 import { fill, FEATURE_LABEL, t } from '@/i18n';
 import { cn } from '@/lib/cn';
@@ -162,7 +163,7 @@ function Media({ center: c, photos, onPrimary }: { center: Center; photos: NonNu
         <ul ref={strip} className={s.strip} onScroll={onScroll} aria-label={fill(t.gallery.label, { name: c.name })}>
           {photos.map((p, i) => (
             <li key={p.src} className={s.slide}>
-              <img src={p.src} width={p.width} height={p.height} alt={p.alt} loading={i === 0 ? 'eager' : 'lazy'} decoding="async" draggable={false} />
+              <FadeImg src={p.src} width={p.width} height={p.height} alt={p.alt} loading={i === 0 ? 'eager' : 'lazy'} decoding="async" draggable={false} />
             </li>
           ))}
         </ul>

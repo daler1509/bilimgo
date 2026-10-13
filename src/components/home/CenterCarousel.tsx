@@ -4,6 +4,7 @@ import { PlaceBadges } from '@/components/centers/CenterBadges';
 import { CenterLink } from '@/components/centers/CenterLink';
 import { CenterLogo } from '@/components/centers/CenterLogo';
 import { categoryLine, districtLabel, exteriorPhoto, openNow, priceLine } from '@/components/centers/centerText';
+import { FadeImg } from '@/components/ui/FadeImg';
 import type { Center } from '@/data/types';
 import { useInView } from '@/hooks/useInView';
 import { useReducedMotion } from '@/hooks/useMediaQuery';
@@ -172,7 +173,7 @@ export function CenterCarousel({ centers, label }: { centers: Center[]; label: s
               <CenterLink id={c.id} className={s.card} data-active={i === active || undefined} tabIndex={twin ? -1 : undefined}>
                 {cover ? (
                   <span className={s.cover}>
-                    <img
+                    <FadeImg
                       src={cover.src}
                       width={cover.width}
                       height={cover.height}
