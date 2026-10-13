@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight, MapPin, Pause, Play, Star } from 'lucide-rea
 import { PlaceBadges } from '@/components/centers/CenterBadges';
 import { CenterLink } from '@/components/centers/CenterLink';
 import { CenterLogo } from '@/components/centers/CenterLogo';
-import { categoryLine, districtLabel, exteriorPhoto, openNow, priceLine } from '@/components/centers/centerText';
+import { categoryLine, coverPhoto, districtLabel, openNow, priceLine } from '@/components/centers/centerText';
 import { FadeImg } from '@/components/ui/FadeImg';
 import type { Center } from '@/data/types';
 import { useInView } from '@/hooks/useInView';
@@ -160,7 +160,7 @@ export function CenterCarousel({ centers, label }: { centers: Center[]; label: s
           const twin = copy !== 1;
           const status = openNow(c);
           const cost = priceLine(c);
-          const cover = exteriorPhoto(c);
+          const cover = coverPhoto(c);
           return (
             <li
               key={`${copy}-${c.id}`}
