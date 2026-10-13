@@ -142,6 +142,10 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
+  .pop .check {
+    animation: heart-pop var(--duration-slow) var(--ease-spring);
+  }
+
   .pulse svg {
     animation: heart-pop var(--duration-slow) var(--ease-spring);
   }

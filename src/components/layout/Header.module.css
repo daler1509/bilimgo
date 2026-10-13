@@ -140,6 +140,25 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* a new number hops in from below */
+.hop {
+  animation: count-hop 480ms var(--ease-spring);
+}
+
+@keyframes count-hop {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.5);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-2px) scale(1.18);
+  }
+  100% {
+    transform: none;
+  }
+}
+
 .desktopOnly {
   display: flex;
 }

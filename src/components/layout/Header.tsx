@@ -2,12 +2,25 @@ import { useEffect, useState } from 'react';
 import { NavLink } from 'react-router';
 import { Logo } from '@/components/brand/Logo';
 import { t } from '@/i18n';
+import { useHop } from '@/hooks/useHop';
 import { cn } from '@/lib/cn';
 import { useCompare } from '@/state/compare';
 import { useFavorites } from '@/state/favorites';
 import { LIST_ITEMS, NAV_ITEMS, useNavTarget } from './navItems';
 import { LanguageMenu, ThemeToggle } from './Settings';
 import s from './Header.module.css';
+
+/** The number next to Favourites / Compare: it hops when it changes */
+function Count({ n }: { n: number }) {
+  // always mounted, so the very first item (0 → 1) hops in as well
+  const hops = useHop(n);
+  if (n === 0) return null;
+  return (
+    <span key={hops} className={cn(s.count, hops > 0 && s.hop)} aria-hidden="true">
+      {n}
+    </span>
+  );
+}
 
 /** Compact top navigation. On app screens (Search, Map) it spans full width. */
 export function Header({ variant = 'page' }: { variant?: 'page' | 'app' }) {
@@ -44,11 +57,7 @@ export function Header({ variant = 'page' }: { variant?: 'page' | 'app' }) {
               <NavLink key={to} to={to} className={s.listLink} aria-label={n ? `${label}: ${n}` : label}>
                 <Icon size={17} strokeWidth={2} aria-hidden="true" />
                 <span>{label}</span>
-                {n > 0 && (
-                  <span className={s.count} aria-hidden="true">
-                    {n}
-                  </span>
-                )}
+                <Count n={n} />
               </NavLink>
             );
           })}

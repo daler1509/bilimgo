@@ -1,9 +1,22 @@
 import { NavLink } from 'react-router';
+import { useHop } from '@/hooks/useHop';
 import { t } from '@/i18n';
+import { cn } from '@/lib/cn';
 import { useCompare } from '@/state/compare';
 import { useFavorites } from '@/state/favorites';
 import { LIST_ITEMS, NAV_ITEMS, useNavTarget } from './navItems';
 import s from './MobileNav.module.css';
+
+/** Count on a tab: always mounted, so the first item (0 → 1) hops in too */
+function Badge({ n }: { n: number }) {
+  const hops = useHop(n);
+  if (n === 0) return null;
+  return (
+    <span key={hops} className={cn(s.badge, hops > 0 && s.hop)}>
+      {n}
+    </span>
+  );
+}
 
 /** Thumb-zone tab bar for phones & tablets. */
 export function MobileNav() {
@@ -22,7 +35,7 @@ export function MobileNav() {
               <NavLink to={target(to)} end={to === '/'} className={s.item} aria-label={n ? `${label}: ${n}` : undefined}>
                 <span className={s.iconWrap} aria-hidden="true">
                   <Icon size={21} strokeWidth={1.9} />
-                  {n > 0 && <span className={s.badge}>{n}</span>}
+                  <Badge n={n} />
                 </span>
                 <span className={s.label}>{label}</span>
               </NavLink>

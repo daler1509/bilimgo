@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Check, Plus } from 'lucide-react';
 import { t } from '@/i18n';
@@ -20,16 +21,18 @@ export function CompareButton({ id, name, variant = 'text', className }: Props) 
   const { toast } = useUi();
   const navigate = useNavigate();
   const active = has(id);
+  const [pop, setPop] = useState(false);
 
   return (
     <button
       type="button"
-      className={cn(variant === 'text' ? s.text : s.labeled, s.compare, active && s.active, className)}
+      className={cn(variant === 'text' ? s.text : s.labeled, s.compare, active && s.active, pop && s.pop, className)}
       aria-pressed={active}
       aria-label={active ? `${t.compare.remove}: ${name}` : `${t.compare.add}: ${name}`}
       onClick={(e) => {
         e.stopPropagation();
         const result = toggle(id);
+        if (result) setPop(true);
         if (result === null) return toast(t.compare.full, { label: t.common.open, onClick: () => navigate('/compare') });
         if (result) {
           const count = ids.length + 1;
@@ -37,7 +40,7 @@ export function CompareButton({ id, name, variant = 'text', className }: Props) 
         }
       }}
     >
-      <span className={s.check} aria-hidden="true">
+      <span className={s.check} aria-hidden="true" onAnimationEnd={() => setPop(false)}>
         {active ? <Check size={13} strokeWidth={2.6} /> : <Plus size={13} strokeWidth={2.4} />}
       </span>
       <span>{active ? t.compare.added : t.compare.add}</span>

@@ -31,7 +31,37 @@
   box-shadow: var(--shadow-lg);
   font-size: var(--text-body-sm);
   pointer-events: auto;
-  animation: pop-in var(--duration-slow) var(--ease-out) both;
+  transform-origin: 50% 100%;
+  animation: toast-in 560ms var(--ease-out) both;
+}
+
+/* it springs up from below, overshoots a little and settles */
+@keyframes toast-in {
+  0% {
+    opacity: 0;
+    transform: translateY(44px) scale(0.94);
+  }
+  45% {
+    opacity: 1;
+    transform: translateY(-9px) scale(1.015);
+  }
+  70% {
+    transform: translateY(3px) scale(0.998);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+.leaving {
+  animation: toast-out 260ms var(--ease-standard) both;
+}
+
+@keyframes toast-out {
+  to {
+    opacity: 0;
+    transform: translateY(18px) scale(0.97);
+  }
 }
 
 .text {

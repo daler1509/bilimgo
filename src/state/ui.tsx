@@ -7,6 +7,8 @@ export interface ToastMessage {
   id: number;
   text: string;
   action?: { label: string; onClick: () => void };
+  /** On its way out: plays the exit animation before it is removed */
+  leaving?: boolean;
 }
 
 interface UiApi {
@@ -17,12 +19,17 @@ interface UiApi {
 
 const UiContext = createContext<UiApi | null>(null);
 const TOAST_MS = 4600;
+/** Matches the exit animation in Toaster.module.css */
+const LEAVE_MS = 260;
 
 export function UiProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
   const seq = useRef(0);
 
-  const dismissToast = useCallback((id: number) => setToasts((t) => t.filter((x) => x.id !== id)), []);
+  const dismissToast = useCallback((id: number) => {
+    setToasts((t) => t.map((x) => (x.id === id ? { ...x, leaving: true } : x)));
+    window.setTimeout(() => setToasts((t) => t.filter((x) => x.id !== id)), LEAVE_MS);
+  }, []);
   const toast = useCallback(
     (text: string, action?: ToastMessage['action']) => {
       const id = ++seq.current;
