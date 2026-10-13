@@ -2,6 +2,7 @@
 .root {
   --card-w: 232px;
   --gap: 20px;
+  --set-w: calc(var(--n, 1) * (var(--card-w) + var(--gap)));
   position: relative;
 }
 
@@ -17,14 +18,17 @@
   display: none;
 }
 
+/* widths are spelled out, not left to intrinsic sizing: Safari sized the
+   nested flex rows too narrow and the two sets of portraits overlapped */
 .belt {
   display: flex;
-  width: max-content;
+  width: var(--set-w);
 }
 
 .list {
   display: flex;
   flex: none;
+  width: var(--set-w);
 }
 
 /* the gap is a margin of every portrait, so two sets join without a seam */
@@ -40,6 +44,7 @@
 }
 
 .root[data-loop] .belt {
+  width: calc(var(--set-w) * 2);
   animation: belt var(--belt, 40s) linear infinite;
 }
 

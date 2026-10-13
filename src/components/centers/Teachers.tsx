@@ -113,7 +113,7 @@ function TeacherRow({ teachers }: { teachers: Teacher[] }) {
     <div
       ref={rootRef}
       className={s.root}
-      style={{ '--belt': `${duration}s` } as CSSProperties}
+      style={{ '--belt': `${duration}s`, '--n': teachers.length } as CSSProperties}
       data-shown={shown || reduced || undefined}
       data-loop={loop || undefined}
       data-paused={paused || undefined}
