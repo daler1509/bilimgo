@@ -1,6 +1,6 @@
 import { useEffect, useId, useMemo, useRef, useState, type ChangeEvent, type ReactNode } from 'react';
 import { Link, useBlocker, useNavigate, useParams, useSearchParams } from 'react-router';
-import { ArrowLeft, ExternalLink, ImagePlus, Plus, Save, Trash2, Upload, UserRound, X } from 'lucide-react';
+import { ArrowLeft, Check, ExternalLink, ImagePlus, Plus, Save, Trash2, Upload, UserRound, X } from 'lucide-react';
 import { CenterLogo } from '@/components/centers/CenterLogo';
 import { MapView } from '@/components/map/MapView';
 import type { MapViewHandle } from '@/components/map/types';
@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/Button';
 import { CATEGORY_TREE } from '@/data/categories';
 import { districtFor } from '@/data/districts';
 import type { AgeGroup, CategoryId, CenterFeature, CenterKind, LearningFormat, Locale, TeachingLanguage } from '@/data/types';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { ru } from '@/i18n/ru';
 import { cn } from '@/lib/cn';
 import { formatOpeningHours, parseOpeningHours } from '@/lib/openingHours';
@@ -33,7 +34,10 @@ import {
   type SubmissionRow,
 } from './centerDraft';
 import { uploadImage } from './media';
+import { CHECKS, completeness, type Completable } from './completeness';
 import { errorText, supabase } from './supabaseClient';
+import { PageHeader, Pill, Score, Switch } from './ui';
+import crm from './crm.module.css';
 import s from './admin.module.css';
 
 const fieldId = (key: string) => `f-${key.replace(/\./g, '-')}`;
@@ -129,10 +133,10 @@ function Checks<T extends string>({ legend, options, selected, onToggle }: { leg
   );
 }
 
-function Section({ title, lead, children }: { title: string; lead?: string; children: ReactNode }) {
+function Section({ title, lead, children, anchor }: { title: string; lead?: string; children: ReactNode; anchor: string }) {
   const id = useId();
   return (
-    <section className={s.section} aria-labelledby={id}>
+    <section className={s.section} aria-labelledby={id} id={`sec-${anchor}`}>
       <h2 className={s.sectionTitle} id={id}>
         {title}
       </h2>
@@ -145,6 +149,43 @@ function Section({ title, lead, children }: { title: string; lead?: string; chil
 const toggle = <T,>(list: T[], v: T) => (list.includes(v) ? list.filter((x) => x !== v) : [...list, v]);
 const keysOf = <T extends string>(rec: Record<T, string>) => Object.keys(rec) as T[];
 
+const SECTIONS: [string, string][] = [
+  ['main', 'Основное'],
+  ['where', 'Где'],
+  ['cats', 'Направления'],
+  ['contacts', 'Контакты и часы'],
+  ['about', 'Описание и курсы'],
+  ['audience', 'Для кого и занятия'],
+  ['photos', 'Логотип и фото'],
+  ['teachers', 'Преподаватели'],
+  ['price', 'Цена и рейтинг'],
+  ['sources', 'Источники'],
+];
+
+/** The draft in the shape the completeness checks read, so the score updates as you type */
+function draftToCompletable(d: Draft): Completable {
+  const lines = (v: string) => v.split('\n').map((x) => x.trim()).filter(Boolean);
+  const some = <T,>(v: T[]) => (v.length ? v : null);
+  return {
+    logo: d.logo.trim() || null,
+    photos: some(d.photos),
+    address: d.address.ru.trim() || null,
+    phones: some(lines(d.phones)),
+    opening_hours: d.openingHours.trim() || null,
+    website: d.website.trim() || null,
+    telegram: d.telegram.trim() || null,
+    instagram: d.instagram.trim() || null,
+    summary: d.summary.ru.trim() || null,
+    about: some(d.about.ru.trim() ? [d.about.ru] : []),
+    programs: some(d.programs.filter((p) => p.title.ru.trim())),
+    ages: some(d.ages),
+    formats: some(d.formats),
+    teaching: some(d.teaching),
+    lessons: some(lines(d.lessons.ru)),
+    teachers: some(d.teachers.filter((t) => t.name.trim())),
+  };
+}
+
 /* ---------- editor ---------- */
 
 export function AdminCenterEditor() {
@@ -152,8 +193,10 @@ export function AdminCenterEditor() {
   const isNew = !id;
   const [params] = useSearchParams();
   const fromId = params.get('from');
+  const copyId = params.get('copy');
   const navigate = useNavigate();
   const { toast } = useUi();
+  const wide = useMediaQuery('(min-width: 1100px)');
 
   const [draft, setDraft] = useState<Draft | null>(null);
   const [saved, setSaved] = useState('');
@@ -179,6 +222,18 @@ export function AdminCenterEditor() {
         if (!data) return setLoadError('Такого центра нет в базе');
         next = draftFromRecord(fromRow(data as CenterRow), (data as CenterRow).published);
         idTouched.current = true;
+      } else if (copyId) {
+        // a new branch «по образцу»: everything copied, the address of the page and the visibility are fresh
+        const { data } = await supabase!.from('centers').select('*').eq('id', copyId).maybeSingle();
+        if (!alive) return;
+        if (data) {
+          next = draftFromRecord(fromRow(data as CenterRow), false);
+          next.id = '';
+          next.branch = '';
+          next.yandexId = '';
+          next.coords = '';
+          next.yandexRatings = '';
+        }
       } else if (fromId) {
         const { data } = await supabase!.from('submissions').select('*').eq('id', fromId).maybeSingle();
         if (!alive) return;
@@ -193,7 +248,7 @@ export function AdminCenterEditor() {
     return () => {
       alive = false;
     };
-  }, [id, fromId]);
+  }, [id, fromId, copyId]);
 
   /* unsaved changes */
   const dirty = !!draft && JSON.stringify(draft) !== saved;
@@ -341,6 +396,11 @@ export function AdminCenterEditor() {
   const yandexId = parseYandexId(draft.yandexId);
   const hoursPreview = draft.openingHours.trim() && parseOpeningHours(draft.openingHours) ? formatOpeningHours(draft.openingHours) : null;
   const errorCount = Object.keys(errors).length;
+  const fill = completeness(draftToCompletable(draft));
+  const jump = (section: string) => {
+    const el = document.getElementById(`sec-${section}`);
+    el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
   const categoryOptions: Option<CategoryId>[] = CATEGORY_TREE.map((c) => ({ value: c.id, label: ru.categories[c.id].label, nested: !!c.parent }));
 
   return (
@@ -352,21 +412,20 @@ export function AdminCenterEditor() {
         void save();
       }}
     >
-      <div className={s.pageHead}>
-        <div>
-          <Link to="/admin/centers" className={s.barLink}>
-            <ArrowLeft size={16} aria-hidden="true" /> Центры
-          </Link>
-          <h1 className={s.pageTitle}>{isNew ? 'Новый центр' : draft.name || 'Без названия'}</h1>
-        </div>
-        <div className={s.segmented} role="group" aria-label="Язык текстов">
-          {TEXT_LOCALES.map((l) => (
-            <button key={l} type="button" className={s.segment} aria-pressed={textLang === l} onClick={() => setTextLang(l)}>
-              Тексты {l.toUpperCase()}
-            </button>
-          ))}
-        </div>
-      </div>
+      <PageHeader
+        back={{ to: '/admin/centers', label: 'Центры' }}
+        title={isNew ? (copyId ? 'Новый филиал' : 'Новый центр') : draft.name || 'Без названия'}
+        subtitle={isNew ? (copyId ? 'Скопированы описание, направления и контакты: проверьте адрес, координаты и карточку на Яндекс Картах.' : undefined) : `/centers/${draft.id}`}
+        actions={
+          <div className={s.segmented} role="group" aria-label="Язык текстов">
+            {TEXT_LOCALES.map((l) => (
+              <button key={l} type="button" className={s.segment} aria-pressed={textLang === l} onClick={() => setTextLang(l)}>
+                Тексты {l.toUpperCase()}
+              </button>
+            ))}
+          </div>
+        }
+      />
 
       {submission && (
         <p className={s.fromSubmission}>
@@ -377,7 +436,9 @@ export function AdminCenterEditor() {
         </p>
       )}
 
-      <Section title="Основное">
+      <div className={crm.editorGrid}>
+        <div className={crm.editorMain}>
+      <Section anchor="main" title="Основное">
         <div className={s.grid}>
           <Text name="name" label="Название" value={draft.name} onChange={setName} error={err('name')} required />
           <Text
@@ -434,7 +495,7 @@ export function AdminCenterEditor() {
         </div>
       </Section>
 
-      <Section title="Где" lead="Базовые факты — из карточки организации на Яндекс Картах.">
+      <Section anchor="where" title="Где" lead="Базовые факты — из карточки организации на Яндекс Картах.">
         <div className={s.grid}>
           <Text
             name="yandexId"
@@ -500,7 +561,7 @@ export function AdminCenterEditor() {
         </div>
       </Section>
 
-      <Section title="Направления" lead="Первым идёт основное: по нему выбирается значок и порядок в поиске.">
+      <Section anchor="cats" title="Направления" lead="Первым идёт основное: по нему выбирается значок и порядок в поиске.">
         <Checks legend="Что преподают" options={categoryOptions} selected={draft.categories} onToggle={toggleCategory} />
         {draft.categories.length > 1 && (
           <div className={cn(s.field, s.narrow)}>
@@ -518,7 +579,7 @@ export function AdminCenterEditor() {
         )}
       </Section>
 
-      <Section title="Контакты и часы">
+      <Section anchor="contacts" title="Контакты и часы">
         <div className={s.grid}>
           <Text name="phones" label="Телефоны" value={draft.phones} onChange={(v) => set('phones', v)} error={err('phones')} rows={2} hint="Один номер на строку" />
           <Text
@@ -536,7 +597,7 @@ export function AdminCenterEditor() {
         </div>
       </Section>
 
-      <Section title="Описание" lead="Своими словами по официальным страницам центра — без копирования.">
+      <Section anchor="about" title="Описание" lead="Своими словами по официальным страницам центра — без копирования.">
         <Text
           name="about"
           label={`О центре, ${TEXT_LANG_NAME[textLang]}`}
@@ -572,7 +633,7 @@ export function AdminCenterEditor() {
         </div>
       </Section>
 
-      <Section title="Для кого и формат" lead="Отмечайте только то, что указано в источниках. Неизвестное оставьте пустым.">
+      <Section anchor="audience" title="Для кого и формат" lead="Отмечайте только то, что указано в источниках. Неизвестное оставьте пустым.">
         <Checks
           legend="Возраст"
           options={keysOf(AGE_LABEL).map((a) => ({ value: a, label: AGE_LABEL[a], hint: AGE_HINT[a] }))}
@@ -616,7 +677,7 @@ export function AdminCenterEditor() {
         />
       </Section>
 
-      <Section title="Логотип и фото" lead="Только знак самого центра и фото, которые можно использовать законно: от центра или по свободной лицензии.">
+      <Section anchor="photos" title="Логотип и фото" lead="Только знак самого центра и фото, которые можно использовать законно: от центра или по свободной лицензии.">
         <div className={s.logoRow}>
           <CenterLogo center={{ name: draft.name || '?', logo: draft.logo || undefined }} size={64} />
           <FileButton accept="image/png,image/jpeg,image/webp" disabled={busy === 'upload'} onChange={(e) => upload('logos', e)}>
@@ -681,6 +742,7 @@ export function AdminCenterEditor() {
       </Section>
 
       <Section
+        anchor="teachers"
         title="Преподаватели"
         lead="Только те, кого центр сам называет на сайте или в канале. Фото человека — с его согласия или из официальных страниц центра. Без добавленных преподавателей на сайте показывается пустой раздел."
       >
@@ -758,7 +820,7 @@ export function AdminCenterEditor() {
         </div>
       </Section>
 
-      <Section title="Цена и рейтинг" lead="Только опубликованные самим центром или названным источником. Без ссылки на источник сайт их не покажет.">
+      <Section anchor="price" title="Цена и рейтинг" lead="Только опубликованные самим центром или названным источником. Без ссылки на источник сайт их не покажет.">
         <label className={s.switch}>
           <input
             type="checkbox"
@@ -826,7 +888,7 @@ export function AdminCenterEditor() {
         )}
       </Section>
 
-      <Section title="Источники" lead="Официальные сайты и Telegram-каналы, откуда взяты направления и описание. Показываются в профиле.">
+      <Section anchor="sources" title="Источники" lead="Официальные сайты и Telegram-каналы, откуда взяты направления и описание. Показываются в профиле.">
         <div className={s.repeat}>
           {draft.sources.map((src, i) => (
             <div key={i} className={s.repeatRow}>
@@ -853,34 +915,84 @@ export function AdminCenterEditor() {
         </div>
       </Section>
 
-      <div className={s.saveBar}>
-        <label className={s.switch}>
-          <input type="checkbox" checked={draft.published} onChange={(e) => set('published', e.target.checked)} />
-          Показывать на сайте
-        </label>
-        {errorCount > 0 && (
-          <span className={s.error} role="status">
-            Проверьте поля: {errorCount}
-          </span>
-        )}
-        {!errorCount && dirty && <span className={s.hint}>Есть несохранённые изменения</span>}
-        <div className={s.saveBarEnd}>
-          {!isNew && (
-            <>
-              <Button variant="ghost" leading={<Trash2 size={18} />} loading={busy === 'delete'} onClick={remove}>
-                Удалить
-              </Button>
-              {draft.published && (
-                <a className={s.barLink} href={`/centers/${draft.id}`} target="_blank" rel="noopener noreferrer">
-                  На сайте <ExternalLink size={14} aria-hidden="true" />
-                </a>
-              )}
-            </>
-          )}
-          <Button type="submit" variant="primary" leading={<Save size={18} />} loading={busy === 'save'} disabled={busy === 'upload'}>
-            {isNew ? 'Создать' : 'Сохранить'}
-          </Button>
         </div>
+
+        <aside className={crm.editorRail} aria-label="Публикация и заполненность">
+          <section className={crm.railCard}>
+            <div className={crm.railRow}>
+              <span>
+                <span className={crm.railTitle}>Показывать на сайте</span>
+                <span className={crm.railNote}>{draft.published ? 'Центр виден посетителям' : 'Скрыт: только в админке'}</span>
+              </span>
+              <Switch checked={draft.published} onChange={(v) => set('published', v)} label="Показывать на сайте" />
+            </div>
+            <Button type="submit" variant="primary" size="lg" block leading={<Save size={18} />} loading={busy === 'save'} disabled={busy === 'upload'}>
+              {isNew ? 'Создать центр' : 'Сохранить'}
+            </Button>
+            <p className={crm.railHint} role="status">
+              {errorCount > 0 ? <span className={s.error}>Проверьте поля: {errorCount}</span> : dirty ? 'Есть несохранённые изменения' : isNew ? 'Центр появится после сохранения' : 'Все изменения сохранены'}
+            </p>
+            {!isNew && (
+              <div className={crm.railLinks}>
+                {draft.published && (
+                  <a className={s.barLink} href={`/centers/${draft.id}`} target="_blank" rel="noopener noreferrer">
+                    Открыть на сайте <ExternalLink size={14} aria-hidden="true" />
+                  </a>
+                )}
+                <button type="button" className={crm.railDanger} onClick={() => void remove()} disabled={busy === 'delete'}>
+                  <Trash2 size={15} aria-hidden="true" /> Удалить центр
+                </button>
+              </div>
+            )}
+          </section>
+
+          <details className={crm.railCard} open={wide || undefined}>
+            <summary className={crm.railSummary}>
+              <span className={crm.railTitle}>Заполненность</span>
+              <Score value={fill.score} />
+            </summary>
+            <ul className={crm.checklist}>
+              {CHECKS.map((c) => {
+                const done = fill.done.some((d) => d.key === c.key);
+                return (
+                  <li key={c.key}>
+                    <button type="button" className={crm.checkItem} data-done={done || undefined} onClick={() => jump(c.section)}>
+                      <span className={crm.checkMark} aria-hidden="true">
+                        {done && <Check size={12} strokeWidth={3} />}
+                      </span>
+                      {c.label}
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </details>
+
+          <nav className={`${crm.railCard} ${crm.railNavCard}`} aria-label="Разделы формы">
+            <span className={crm.railTitle}>Разделы</span>
+            <ul className={crm.railNav}>
+              {SECTIONS.map(([key, label]) => (
+                <li key={key}>
+                  <button type="button" onClick={() => jump(key)}>
+                    {label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </aside>
+      </div>
+
+      {/* phones: the save button stays in reach */}
+      <div className={crm.mobileSave}>
+        <label className={crm.mobileSwitch}>
+          <Switch checked={draft.published} onChange={(v) => set('published', v)} label="Показывать на сайте" />
+          <span>На сайте</span>
+        </label>
+        {dirty && <Pill tone="warn" plain>Не сохранено</Pill>}
+        <Button type="submit" variant="primary" leading={<Save size={18} />} loading={busy === 'save'} disabled={busy === 'upload'} style={{ marginLeft: 'auto' }}>
+          {isNew ? 'Создать' : 'Сохранить'}
+        </Button>
       </div>
     </form>
   );

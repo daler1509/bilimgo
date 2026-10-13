@@ -1,5 +1,5 @@
 import type { ComponentType } from 'react';
-import { createBrowserRouter, Navigate } from 'react-router';
+import { createBrowserRouter } from 'react-router';
 import { AppShell } from './AppShell';
 import { HomePage } from '@/pages/HomePage';
 import { NotFoundPage } from '@/pages/NotFoundPage';
@@ -38,8 +38,11 @@ export const router = createBrowserRouter([
     hydrateFallbackElement: <RouteLoading />,
     lazy: admin(() => import('@/admin/AdminLayout'), 'AdminLayout'),
     children: [
-      { index: true, element: <Navigate to="centers" replace /> },
+      { index: true, lazy: admin(() => import('@/admin/AdminDashboard'), 'AdminDashboard') },
       { path: 'login', lazy: admin(() => import('@/admin/AdminLogin'), 'AdminLogin') },
+      { path: 'teachers', lazy: admin(() => import('@/admin/AdminTeachers'), 'AdminTeachers') },
+      { path: 'media', lazy: admin(() => import('@/admin/AdminMedia'), 'AdminMedia') },
+      { path: 'settings', lazy: admin(() => import('@/admin/AdminSettings'), 'AdminSettings') },
       { path: 'centers', lazy: admin(() => import('@/admin/AdminCenters'), 'AdminCenters') },
       { path: 'centers/new', lazy: admin(() => import('@/admin/AdminCenterEditor'), 'AdminCenterEditor') },
       { path: 'centers/:id', lazy: admin(() => import('@/admin/AdminCenterEditor'), 'AdminCenterEditor') },

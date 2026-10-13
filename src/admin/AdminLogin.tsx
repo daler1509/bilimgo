@@ -1,8 +1,9 @@
 import { useState, type FormEvent } from 'react';
-import { LogIn } from 'lucide-react';
+import { Eye, EyeOff, LogIn } from 'lucide-react';
 import { Logo } from '@/components/brand/Logo';
 import { Button } from '@/components/ui/Button';
 import { useAdminSession } from './session';
+import crm from './crm.module.css';
 import s from './admin.module.css';
 
 /**
@@ -22,6 +23,7 @@ export function AdminLogin() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [shown, setShown] = useState(false);
 
   const submit = async (e: FormEvent) => {
     e.preventDefault();
@@ -32,42 +34,54 @@ export function AdminLogin() {
   };
 
   return (
-    <form className={s.login} onSubmit={submit} noValidate aria-labelledby="login-title">
-      <Logo size={28} to="" />
-      <h1 className={s.pageTitle} id="login-title">
-        Вход в админку
-      </h1>
-      <label className={s.field}>
-        <span className={s.label}>Логин</span>
-        <input
-          className={s.input}
-          autoComplete="username"
-          autoCapitalize="none"
-          spellCheck={false}
-          value={login}
-          onChange={(e) => setLogin(e.target.value)}
-        />
-      </label>
-      <label className={s.field}>
-        <span className={s.label}>Пароль</span>
-        <input
-          className={s.input}
-          type="password"
-          autoComplete="current-password"
-          value={password}
-          aria-invalid={!!error || undefined}
-          aria-describedby={error ? 'login-error' : undefined}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </label>
-      {error && (
-        <p className={s.error} id="login-error" role="alert">
-          {error}
-        </p>
-      )}
-      <Button type="submit" variant="primary" size="lg" block loading={busy} leading={<LogIn size={18} />}>
-        Войти
-      </Button>
-    </form>
+    <div className={crm.loginPage}>
+      <div className={crm.loginPattern} aria-hidden="true" />
+      <form className={crm.loginCard} onSubmit={submit} noValidate aria-labelledby="login-title">
+        <Logo size={30} to="" />
+        <div>
+          <h1 className={crm.loginTitle} id="login-title">
+            Вход в админку
+          </h1>
+          <p className={crm.subtitle}>Каталог, заявки и преподаватели в одном месте</p>
+        </div>
+        <label className={s.field}>
+          <span className={s.label}>Логин</span>
+          <input
+            className={s.input}
+            autoComplete="username"
+            autoCapitalize="none"
+            spellCheck={false}
+            autoFocus
+            value={login}
+            onChange={(e) => setLogin(e.target.value)}
+          />
+        </label>
+        <label className={s.field}>
+          <span className={s.label}>Пароль</span>
+          <span className={crm.passwordWrap}>
+            <input
+              className={s.input}
+              type={shown ? 'text' : 'password'}
+              autoComplete="current-password"
+              value={password}
+              aria-invalid={!!error || undefined}
+              aria-describedby={error ? 'login-error' : undefined}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <button type="button" className={crm.passwordToggle} onClick={() => setShown((v) => !v)} aria-label={shown ? 'Скрыть пароль' : 'Показать пароль'}>
+              {shown ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          </span>
+        </label>
+        {error && (
+          <p className={s.error} id="login-error" role="alert">
+            {error}
+          </p>
+        )}
+        <Button type="submit" variant="primary" size="lg" block loading={busy} leading={<LogIn size={18} />}>
+          Войти
+        </Button>
+      </form>
+    </div>
   );
 }

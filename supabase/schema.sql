@@ -228,13 +228,23 @@ create table if not exists public.leads (
   comment     text check (length(comment) <= 500),
   locale      text check (locale in ('ru', 'uz', 'en')),
   page        text check (length(page) <= 500),
-  status      text not null default 'new' check (status in ('new', 'done', 'spam')),
+  -- new → working (в работе) → done (обработана) | spam
+  status      text not null default 'new' check (status in ('new', 'working', 'done', 'spam')),
   -- когда заявка ушла в Telegram; ставит Edge Function lead-to-telegram
   notified_at timestamptz,
+  -- внутренняя заметка админа и время, когда заявку взяли в работу
+  note        text check (length(note) <= 1000),
+  handled_at  timestamptz,
   created_at  timestamptz not null default now()
 );
 
 alter table public.leads add column if not exists notified_at timestamptz;
+
+-- для баз, созданных до CRM-админки: статус «в работе», заметка, время обработки
+alter table public.leads drop constraint if exists leads_status_check;
+alter table public.leads add constraint leads_status_check check (status in ('new', 'working', 'done', 'spam'));
+alter table public.leads add column if not exists note text check (length(note) <= 1000);
+alter table public.leads add column if not exists handled_at timestamptz;
 
 create index if not exists leads_status_created on public.leads (status, created_at desc);
 
@@ -264,7 +274,7 @@ alter table public.leads enable row level security;
 drop policy if exists "leads: anyone sends" on public.leads;
 create policy "leads: anyone sends" on public.leads
   for insert to anon, authenticated
-  with check (status = 'new' and notified_at is null);
+  with check (status = 'new' and notified_at is null and note is null and handled_at is null);
 
 drop policy if exists "leads: admins read" on public.leads;
 create policy "leads: admins read" on public.leads
